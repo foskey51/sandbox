@@ -5,24 +5,10 @@ import { useState, useEffect } from "react";
 const NavBar = () => {
     const store = useStore();
     const [isDropdownVisible, setDropdownVisible] = useState(false);
-    const {setLanguageName, setEditorTheme, setDarkMode} = store;
+    const { setLanguageName, setDarkMode } = store;
     const darkMode = useStore(state => state.darkMode);
     const languageName = useStore(state => state.languageName);
     const languageList = useStore(state => state.languageList);
-
-    useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-        const initialDark = savedTheme === 'dark';
-        setDarkMode(initialDark);
-
-        if (initialDark) {
-            document.documentElement.classList.add('dark');
-            setEditorTheme('vs-dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-            setEditorTheme('vs');
-        }
-    }, []);
 
     const toggleDarkMode = () => {
         const newDarkValue = !darkMode;
@@ -31,10 +17,8 @@ const NavBar = () => {
 
         if (newDarkValue) {
             document.documentElement.classList.add('dark');
-            setEditorTheme('vs-dark');
         } else {
             document.documentElement.classList.remove('dark');
-            setEditorTheme('vs');
         }
 
         setDarkMode(newDarkValue);

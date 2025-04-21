@@ -8,11 +8,9 @@ const useStore = create(
       setTerminalCollapsed: (value) => set({ terminalCollapsed: value }),
       languageName: 'JavaScript',
       setLanguageName: (value) => set({ languageName: value }),
-      languageList: ["Java", "JavaScript", "C", "Cpp", "Php", "Rust", "Go"],
+      languageList: ["Java", "JavaScript", "C", "Cpp", "Php", "Rust", "Go", "C#"],
       darkMode: false, 
       setDarkMode: (value) => set({ darkMode: value }),
-      editorTheme: 'vs', 
-      setEditorTheme: (value) => set({ editorTheme: value }),
     }),
     {
       name: 'sandbox-store',

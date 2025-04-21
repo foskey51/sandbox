@@ -17,4 +17,7 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  build: {
+    target: 'esnext', // important for monaco
+  }
 });

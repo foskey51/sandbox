@@ -1,22 +1,23 @@
 @import "tailwindcss";
 
-#root{
+#root {
   overflow: hidden;
 }
 
 textarea::-webkit-scrollbar {
-    display: none; 
-  }
-  
-  textarea {
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none; /* For Internet Explorer and Edge */
-    text-align:center;      /* Horizontal centering */
-    height: 4rem;
-    line-height: 1.5rem;
-    padding: 6%;
-  }
-
-div::-webkit-scrollbar{
-  display:none
+  display: none;
 }
+
+textarea {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  text-align: center; /* Horizontal centering */
+  height: 4rem;
+  line-height: 1.5rem;
+  padding: 6%;
+}
+
+div::-webkit-scrollbar {
+  display: none;
+}
+

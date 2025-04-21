@@ -15,6 +15,7 @@
     "monaco-themes": "^0.4.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-split": "^2.0.14",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
