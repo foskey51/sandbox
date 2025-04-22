@@ -9,14 +9,17 @@ import HtmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
 import TsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 
 import useStore from "../../store";
-
 const Editor = () => {
   const darkMode = useStore(state => state.darkMode);
   const languageName = useStore(state => state.languageName);
+  const editorVal = useStore(state => state.editorVal);
+  const { setEditorVal } = useStore();
   const editorRef = useRef(null);
   const editorInstanceRef = useRef(null);
 
   useEffect(() => {
+    let debounceTimeout;
+
     self.MonacoEnvironment = {
       getWorker(_, label) {
         switch (label) {
@@ -36,7 +39,7 @@ const Editor = () => {
 
     if (editorRef.current && !editorInstanceRef.current) {
       const editor = monaco.editor.create(editorRef.current, {
-        value: Array(50).fill("\n").join(''),
+        value: editorVal,
         language: languageName.toLowerCase(),
         automaticLayout: true,
         fontSize: 15,
@@ -49,15 +52,30 @@ const Editor = () => {
         wordWrap: "off",
       });
       editorInstanceRef.current = editor;
+
+      editor.onDidChangeModelContent(() => {
+        if (debounceTimeout) {
+          clearTimeout(debounceTimeout);
+        }
+
+        debounceTimeout = setTimeout(() => {
+          const updatedValue = editor.getValue();
+          setEditorVal(updatedValue);
+          console.log(updatedValue);
+        }, 500);
+      });
     }
 
-    monaco.editor.defineTheme('one-dark-pro', nightOwl);
-    monaco.editor.setTheme(darkMode ? 'one-dark-pro' : '');
+    monaco.editor.defineTheme('nightOwl', nightOwl);
+    monaco.editor.setTheme(darkMode ? 'nightOwl' : '');
 
     return () => {
       if (editorInstanceRef.current) {
         editorInstanceRef.current.dispose();
         editorInstanceRef.current = null;
+      }
+      if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
       }
     };
 

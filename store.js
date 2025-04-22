@@ -9,8 +9,10 @@ const useStore = create(
       languageName: 'JavaScript',
       setLanguageName: (value) => set({ languageName: value }),
       languageList: ["Java", "JavaScript", "C", "Cpp", "Php", "Rust", "Go", "C#"],
-      darkMode: false, 
+      darkMode: false,
       setDarkMode: (value) => set({ darkMode: value }),
+      editorVal: '\n\n\n\n\n\n\n\n\n\n\n\n\\n\n\n',
+      setEditorVal: (value) => set({ editorVal: value }),
     }),
     {
       name: 'sandbox-store',
@@ -18,6 +20,7 @@ const useStore = create(
         darkMode: state.darkMode,
         languageName: state.languageName,
         editorTheme: state.editorTheme,
+        editorVal: state.editorVal,
       }),
     }
   )
