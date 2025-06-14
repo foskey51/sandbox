@@ -1,11 +1,12 @@
 import Assistant from "../components/Assistant";
-import Editor from "../components/Editor";
+import Editor from "../components/MonacoEditor";
 import Terminal from "../components/Terminal";
 import NavBar from "../components/NavBar";
 import Split from "react-split";
 import useStore from "../../store";
+import MonacoEditor from "../components/MonacoEditor";
 
-const Home = () => {
+const OnlineCompiler = () => {
   const darkMode = useStore(state => state.darkMode);
 
   return (
@@ -55,7 +56,7 @@ const Home = () => {
             >
               {/* Editor */}
               <div className="h-full overflow-auto p-2 border-b">
-                <Editor />
+                <MonacoEditor />
               </div>
 
               {/* Terminal */}
@@ -70,4 +71,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default OnlineCompiler;

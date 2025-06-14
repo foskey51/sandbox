@@ -1,14 +1,9 @@
-import { MinusIcon, PlusIcon } from "../utils/Icons";
 import useStore from "../../store";
 
 const Terminal = () => {
-    const darkMode = useStore(state => state.darkMode);
-
     return (
-        <div
-            className={`w-full h-full ${darkMode ? 'bg-gray-950 text-white' : 'bg-white text-black'} transition-all duration-300 ease-linear`}
-        >
-            <div className="flex items-center justify-between px-4 py-2 border-b">
+        <div className="w-full h-full bg-white text-black dark:bg-gray-950 dark:text-white transition-all duration-300 ease-linear">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-black dark:border-white">
                 <span className="font-medium">Terminal</span>
             </div>
 
@@ -17,6 +12,6 @@ const Terminal = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Terminal;

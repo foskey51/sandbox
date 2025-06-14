@@ -11,22 +11,12 @@ const NavBar = () => {
     const languageList = useStore(state => state.languageList);
 
     const toggleDarkMode = () => {
-        const newDarkValue = !darkMode;
-
-        localStorage.setItem('theme', newDarkValue ? 'dark' : 'light');
-
-        if (newDarkValue) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-
-        setDarkMode(newDarkValue);
+        setDarkMode(!darkMode);
     };
 
     const renderList = (words) => {
         return (
-            <div className={`fixed top-9 right-13 z-10 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} border border-gray-400 rounded-md shadow-md`}>
+            <div className={`fixed top-12 right-15 z-10 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'} border border-gray-400 rounded-md shadow-md`}>
                 <ul>
                     {words.map((word, index) => (
                         <li
@@ -44,8 +34,8 @@ const NavBar = () => {
 
     return (
         <>
-            <div className={`flex p-2 ${darkMode ? 'bg-black text-white' : 'bg-white text-black'}`}>
-                <span className="text-lg font-mono font-semibold">Sandbox</span>
+            <div className={`flex p-4 ${darkMode ? 'bg-black text-white' : 'bg-white text-black'}`}>
+                <span className="text-xl font-mono font-semibold">Sandbox</span>
                 <div className="flex ml-auto mt-1 space-x-4">
                     <PlayIcon />
                     <StopIcon />
