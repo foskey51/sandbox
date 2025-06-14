@@ -11,7 +11,7 @@ const useStore = create(
       languageList: ["Java", "JavaScript", "C", "Cpp", "Php", "Rust", "Go", "C#"],
       darkMode: false,
       setDarkMode: (value) => set({ darkMode: value }),
-      editorVal: '\n\n\n\n\n\n\n\n\n\n\n\n\\n\n\n',
+      editorVal: '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
       setEditorVal: (value) => set({ editorVal: value }),
     }),
     {
