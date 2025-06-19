@@ -1,11 +1,13 @@
-import { Link } from "react-router";
 import useStore from "../../store";
 import { ArrowRight, DarkModeIcon, GitHubIcon, LightModeIcon, MouseScroll } from "../utils/Icons";
+import { useState } from "react";
+import LoginSignupModal from "./LoginSignupModal";
 
 const Hero = () => {
     const store = useStore();
     const darkMode = useStore(state => state.darkMode);
     const { setDarkMode } = store;
+    const [showLogin, setShowLogin] = useState(false);
 
     return (
         <div>
@@ -45,13 +47,14 @@ const Hero = () => {
                             Learn to code, try web dev, and explore Linux all in your browser.
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center items-center sm:space-x-4 space-y-3 sm:space-y-0">
-                            <Link
-                                to="/"
+                            <button
+                                onClick={() => setShowLogin(true)}
                                 className="flex items-center justify-center bg-yellow-700 text-white px-6 py-2 rounded hover:bg-yellow-600 transition"
                             >
                                 Get Started
                                 <ArrowRight className="w-4 h-4 ml-3" />
-                            </Link>
+                            </button>
+                            {showLogin && <LoginSignupModal onClose={() => setShowLogin(false)} />}
                             <button
                                 onClick={() => window.open("https://github.com/foskey51/sandbox/", "_blank")}
                                 className="flex items-center justify-center bg-gray-800 text-white px-5 py-2 rounded hover:bg-gray-500 transition">

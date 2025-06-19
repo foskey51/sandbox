@@ -1,30 +1,24 @@
 import Assistant from "../components/Assistant";
-import Editor from "../components/MonacoEditor";
 import Terminal from "../components/Terminal";
 import NavBar from "../components/NavBar";
 import Split from "react-split";
-import useStore from "../../store";
 import MonacoEditor from "../components/MonacoEditor";
 
 const OnlineCompiler = () => {
-  const darkMode = useStore(state => state.darkMode);
 
   return (
-    <div className={`h-screen w-screen overflow-hidden flex ${darkMode ? "bg-[#0D1117]" : "bg-white"}`}>
+    <div className="h-screen w-screen overflow-hidden flex bg-white dark:bg-[#0D1117]">
       {/* Assistant Panel */}
       <div className="flex flex-col h-full w-full">
         <Split
           className="flex h-full"
           sizes={[20, 80]}
           minSize={200}
-          gutterSize={4} 
+          gutterSize={4}
           direction="horizontal"
           gutter={() => {
             const gutter = document.createElement('div');
-            gutter.className = `${darkMode 
-              ? "bg-[#1F2937] hover:bg-gray-600"
-              : "bg-gray-300 hover:bg-gray-400"
-            } transition-all duration-200 cursor-col-resize`;
+            gutter.className = "bg-gray-300 hover:bg-gray-400 dark:bg-[#1F2937] dark:hover:bg-gray-600 transition-all duration-200 cursor-col-resize";
             return gutter;
           }}
         >
@@ -47,10 +41,7 @@ const OnlineCompiler = () => {
               direction="vertical"
               gutter={() => {
                 const gutter = document.createElement('div');
-                gutter.className = `${darkMode 
-                  ? "bg-[#1F2937] hover:bg-gray-600"
-                  : "bg-gray-300 hover:bg-gray-400"
-                } transition-all duration-200 cursor-row-resize`;
+                gutter.className = "bg-gray-300 hover:bg-gray-400 dark:bg-[#1F2937] dark:hover:bg-gray-600 transition-all duration-200 cursor-row-resize";
                 return gutter;
               }}
             >
