@@ -13,7 +13,7 @@ const useStore = create(
       setDarkMode: (value) => set({ darkMode: value }),
       editorVal: '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
       setEditorVal: (value) => set({ editorVal: value }),
-      isAuthenticated:false,
+      isAuthenticated:true,
       setIsAuthenticated: (value) => set({isAuthenticated: value}),
     }),
     {

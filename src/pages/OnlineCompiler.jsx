@@ -12,7 +12,7 @@ const OnlineCompiler = () => {
       <div className="flex flex-col h-full w-full">
         <Split
           className="flex h-full"
-          sizes={[20, 80]}
+          sizes={[25, 75]}
           minSize={200}
           gutterSize={4}
           direction="horizontal"

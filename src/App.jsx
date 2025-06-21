@@ -6,6 +6,7 @@ import WebDev from "./pages/WebDev";
 import Hero from "./pages/Hero";
 import { BrowserRouter, Route, Routes } from "react-router";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 const App = () => {
   const darkMode = useStore(state => state.darkMode);
@@ -23,11 +24,17 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Hero />} />
-          <Route path="/OnlineCompiler" element={<OnlineCompiler />} />
-          <Route path="/WebDevPlayground" element={<WebDev />} />
           <Route path="*" element={<NotFound />} />
+
+          {/* Protected routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/OnlineCompiler" element={<OnlineCompiler />} />
+            <Route path="/WebDevPlayground" element={<WebDev />} />
+          </Route>
+
         </Routes>
-      </BrowserRouter >
+      </BrowserRouter>
+
     </>
   )
 };
