@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import viteCompression from "vite-plugin-compression"
+import mkcert from 'vite-plugin-mkcert'
 
 export default defineConfig({
   plugins: [
@@ -14,8 +15,9 @@ export default defineConfig({
       threshold: 1024,
       verbose: true,
     }),
+    mkcert()
   ],
   build: {
-    target: 'esnext', 
+    target: 'esnext',
   },
 })
