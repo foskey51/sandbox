@@ -5,10 +5,20 @@ import { ArrowsIn, ArrowsOut, DarkModeIcon, DownloadIcon, LightModeIcon } from '
 import useStore from "../../store";
 
 const WebDev = () => {
-  const [html, setHtml] = useState(`<div class="container">
-  <h1 class="sitename">Sandbox</h1>
-  <p id="tagline"></p>
-</div>`);
+  const [html, setHtml] = useState(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sandbox</title>
+</head>
+<body>
+  <div class="container">
+    <h1 class="sitename">Sandbox</h1>
+    <p id="tagline"></p>
+  </div>
+</body>
+</html>
+`);
 
   const [css, setCss] = useState(`body {
   font-family: sans-serif;
