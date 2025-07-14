@@ -1,6 +1,5 @@
 import { Navigate, Outlet } from "react-router";
 import useStore from "../../store";
-import { Sidebar, SidebarBody } from "../components/Sidebar";
 
 const ProtectedRoute = () => {
 
@@ -11,11 +10,7 @@ const ProtectedRoute = () => {
   }
 
   return (
-    <Sidebar>
-      <SidebarBody>
-        <Outlet />
-      </SidebarBody>
-    </Sidebar>
+    <Outlet />
   );
 };
 

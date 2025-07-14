@@ -15,7 +15,6 @@ export default defineConfig({
       threshold: 1024,
       verbose: true,
     }),
-    mkcert()
   ],
   build: {
     target: 'esnext',

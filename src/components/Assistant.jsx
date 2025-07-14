@@ -1,7 +1,9 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useLayoutEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import useStore from "../../store";
+import { IconCopy } from "@tabler/icons-react";
 
 const Assistant = () => {
   const textareaRef = useRef(null);
@@ -14,6 +16,7 @@ const Assistant = () => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const darkMode = useStore(state => state.darkMode);
   const controller = new AbortController();
 
   const handleInput = () => {
@@ -35,15 +38,23 @@ const Assistant = () => {
     controllerRef.current = new AbortController();
 
     try {
+      const systemMessage = {
+        role: "system",
+        content: "You are an interactive programming tutor for an online compiler. You teach programming languages by providing clear, short complete code examples along with concise explanations. Always ask the user a follow-up question to keep the conversation concise and going and encourage deeper learning.",
+      };
+
       const response = await fetch(`${import.meta.env.VITE_LLM_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "llama3.2",
           stream: true,
-          messages: [...newMessages],
+          messages: [
+            systemMessage,
+            ...newMessages,
+          ],
         }),
-          signal: controller.signal,
+        signal: controller.signal,
       });
 
       const reader = response.body.getReader();
@@ -128,11 +139,12 @@ const Assistant = () => {
     handleInput();
   }, [input]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  useLayoutEffect(() => {
+    const el = messagesEndRef.current;
+    if (el && !isLoading) {
+      el.scrollIntoView({ behavior: "smooth", block: "end" });
     }
-  }, [messages, isLoading]);
+  }, [messages]);
 
   // Icons
   const SendIcon = () => (
@@ -148,12 +160,8 @@ const Assistant = () => {
   );
 
   const CopyButton = ({ code }) => (
-    <button
-      onClick={() => copyToClipboard(code)}
-      className="absolute top-2 right-2 bg-gray-700 text-white text-xs px-2 py-1 rounded"
-    >
-      Copy
-    </button>
+    <IconCopy size={18} className="absolute top-3 right-2 cursor-pointer"
+      onClick={() => copyToClipboard(code)} />
   );
 
   const ScrollDownArrow = () => (
@@ -170,9 +178,9 @@ const Assistant = () => {
       const match = /language-(\w+)/.exec(className || "");
       const codeStr = String(children).replace(/\n$/, "");
       return !inline && match ? (
-        <div className="relative">
+        <div className="relative overflow-auto">
           <CopyButton code={codeStr} />
-          <SyntaxHighlighter style={oneDark} language={match[1]} PreTag="div" {...props}>
+          <SyntaxHighlighter className="overflow-auto" style={darkMode ? oneDark : oneLight} language={match[1]} PreTag="div" {...props}>
             {codeStr}
           </SyntaxHighlighter>
         </div>
@@ -183,7 +191,7 @@ const Assistant = () => {
   };
 
   return (
-    <div className="flex flex-col h-full w-full dark:bg-black dark:text-white bg-white text-black relative overflow-hidden">
+    <div className="flex flex-col h-full w-full dark:bg-black dark:text-white bg-white text-black relative">
       {/* Header */}
       <div className="flex justify-center items-center py-4 border-b border-black dark:border-gray-700">
         <h1 className="text-lg font-semibold">Llama AI</h1>
@@ -193,16 +201,15 @@ const Assistant = () => {
       <div
         ref={chatContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto py-3 space-y-4"
+        className="flex-1 min-h-0 overflow-y-auto py-3 space-y-4"
       >
         {messages.map((msg, idx) => (
           <div key={idx} className="w-full flex justify-center">
             <div
               className={`p-3 rounded-xl max-w-full w-full md:max-w-[97%] whitespace-pre-wrap break-words border overflow-x-auto
-                ${
-                  msg.role === "user"
-                    ? "text-black dark:text-white dark:border-white border-black text-center"
-                    : "bg-gray-200 dark:bg-gray-800 text-black dark:text-white border-gray-400 dark:border-gray-700"
+                ${msg.role === "user"
+                  ? "text-black dark:text-white dark:border-white border-black text-center"
+                  : "bg-gray-200 dark:bg-gray-800 text-black dark:text-white border-gray-400 dark:border-gray-700"
                 }`}
             >
               {msg.role === "assistant" ? (
@@ -213,7 +220,7 @@ const Assistant = () => {
             </div>
           </div>
         ))}
-        <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} className="h-4" />
       </div>
 
       {/* Scroll to bottom arrow */}
@@ -231,10 +238,9 @@ const Assistant = () => {
             onInput={handleInput}
             onKeyDown={handleKeyDown}
             className="flex-1 bg-transparent text-left text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 
-                       resize-none py-3 pr-2 focus:outline-none truncate"
+             resize-none py-3 pr-2 focus:outline-none truncate max-h-[200px]"
             placeholder="Say something"
             rows={1}
-            style={{ minHeight: "40px", maxHeight: "200px", overflow: "auto" }}
             disabled={isLoading}
           />
           <button onClick={isLoading ? stopStreaming : handleSubmit} className="mb-1">

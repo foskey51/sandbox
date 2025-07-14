@@ -1,15 +1,18 @@
 import Assistant from "../components/Assistant";
-import Terminal from "../components/Terminal";
 import NavBar from "../components/NavBar";
 import Split from "react-split";
 import MonacoEditor from "../components/MonacoEditor";
+import TerminalView from "../components/TerminalView";
+import Sidebar from "../components/Sidebar";
 
 const OnlineCompiler = () => {
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex bg-white dark:bg-[#0D1117]">
+    <div className="flex h-screen w-screen overflow-auto bg-white dark:bg-[#0D1117]">
+      <Sidebar />
+
       {/* Assistant Panel */}
-      <div className="flex flex-col h-full w-full">
+      <div className="flex flex-col h-full w-full overflow-hidden">
         <Split
           className="flex h-full"
           sizes={[25, 75]}
@@ -22,21 +25,20 @@ const OnlineCompiler = () => {
             return gutter;
           }}
         >
-          {/* Left side: Assistant */}
-          <div className="h-full overflow-auto p-2">
+          <div className="h-full overflow-hidden p-2 flex flex-col min-h-0">
             <Assistant />
           </div>
 
           {/* Right side: NavBar + Editor + Terminal */}
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full w-full">
 
             <NavBar />
 
             {/* Editor and Terminal Split */}
             <Split
-              className="flex flex-col w-full flex-1"
-              sizes={[70, 30]}
-              minSize={70}
+              className="flex flex-col w-full h-full flex-1"
+              sizes={[60, 40]}
+              minSize={180}
               gutterSize={3}
               direction="vertical"
               gutter={() => {
@@ -46,13 +48,13 @@ const OnlineCompiler = () => {
               }}
             >
               {/* Editor */}
-              <div className="h-full overflow-auto p-2 border-b">
+              <div className="h-full w-full overflow-auto p-2 border-b">
                 <MonacoEditor />
               </div>
 
               {/* Terminal */}
-              <div className="h-full overflow-auto p-2">
-                <Terminal />
+              <div className="h-full w-full flex-col overflow-hidden p-2">
+                <TerminalView />
               </div>
             </Split>
           </div>

@@ -13,8 +13,10 @@ const useStore = create(
       setDarkMode: (value) => set({ darkMode: value }),
       editorVal: '\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n',
       setEditorVal: (value) => set({ editorVal: value }),
-      isAuthenticated: false,
-      setIsAuthenticated: (value) => set({isAuthenticated: value}),
+      isAuthenticated: true,
+      setIsAuthenticated: (value) => set({ isAuthenticated: value }),
+      term: null,
+      setTerm: (termInstance) => set({ term: termInstance }),
     }),
     {
       name: 'sandbox-store',

@@ -1,6 +1,7 @@
 import { DarkModeIcon, LightModeIcon, PlayIcon, StopIcon, ResetIcon } from "../utils/Icons"
 import useStore from "../../store";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import useCodeExecService from "../service/useCodeExecService";
 
 const NavBar = () => {
     const store = useStore();
@@ -9,6 +10,7 @@ const NavBar = () => {
     const { setLanguageName, setDarkMode } = store;
     const languageName = useStore(state => state.languageName);
     const languageList = useStore(state => state.languageList);
+    const { connect, close } = useCodeExecService();
 
     const toggleDarkMode = () => {
         setDarkMode(!darkMode);
@@ -37,9 +39,26 @@ const NavBar = () => {
             <div className="flex p-4 dark:bg-black dark:text-white bg-white text-black">
                 <span className="text-xl font-mono font-semibold">Sandbox</span>
                 <div className="flex ml-auto left-1/2 transform translate-x-1/2 mt-1 space-x-4">
-                    <PlayIcon />
-                    <StopIcon />
-                    <ResetIcon />
+                    <div
+                        onClick={() => {
+                            connect();
+                        }}>
+                        <PlayIcon />
+                    </div>
+
+                    <div
+                        onClick={() => {
+                            close();
+                        }}>
+                        <StopIcon />
+                    </div>
+
+                    <div
+                        onClick={() => {
+                            console.log("clicked reset");
+                        }}>
+                        <ResetIcon />
+                    </div>
                 </div>
                 {isDropdownVisible && renderList(languageList)}
                 <div className="ml-auto flex space-x-3 items-center justify-end relative">

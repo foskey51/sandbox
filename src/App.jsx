@@ -7,6 +7,8 @@ import Hero from "./pages/Hero";
 import { BrowserRouter, Route, Routes } from "react-router";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./utils/ProtectedRoute";
+import Profile from "./pages/Profile";
+import SideBarWrapper from "./components/SideBarWrapper";
 
 const App = () => {
   const darkMode = useStore(state => state.darkMode);
@@ -28,8 +30,9 @@ const App = () => {
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/OnlineCompiler" element={<OnlineCompiler />} />
-            <Route path="/WebDevPlayground" element={<WebDev />} />
+            <Route path="/online-compiler" element={<OnlineCompiler />} />
+            <Route path="/webdev-playground" element={<SideBarWrapper><WebDev /></SideBarWrapper>} />
+            <Route path="/profile" element={<SideBarWrapper><Profile /></SideBarWrapper>} />
           </Route>
 
         </Routes>
