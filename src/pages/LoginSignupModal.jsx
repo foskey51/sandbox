@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useStore from '../../store';
-import axios from 'axios'; 
+import axios from 'axios';
 
 const LoginSignupModal = ({ onClose }) => {
   const store = useStore();
@@ -11,16 +11,16 @@ const LoginSignupModal = ({ onClose }) => {
   const [error, setError] = useState({ username: '', password: '', confirmPassword: '', general: '' });
   const [successMessage, setSuccessMessage] = useState('');
 
-  const validateUsername = (u) => /^[\w.@+-]+$/.test(u);
-  const validatePassword = (p) => /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(p);
+  const validateUsername = (u) => /^[\w.@+-]{5,}$/.test(u);
+  const validatePassword = (p) => /^(?=.*[a-zA-Z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{6,20}$/.test(p);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((f) => ({ ...f, [name]: value }));
     let msg = '';
 
-    if (name === 'username') msg = validateUsername(value) ? '' : 'Only letters, numbers, and . _ @ + -';
-    if (name === 'password') msg = validatePassword(value) ? '' : 'Min 6 chars + letters & numbers';
+    if (name === 'username') { msg = validateUsername(value) ? '' : 'Username must be at least 5 characters and contain only letters, numbers, and . _ @ + -'; }
+    if (name === 'password') { msg = validatePassword(value) ? '' : 'Password must be 6-20 characters with at least one uppercase letter, one number, and one special character.'; }
     if (!isLogin && name === 'confirmPassword') {
       msg = value !== formData.password ? 'Passwords do not match' : '';
     }
