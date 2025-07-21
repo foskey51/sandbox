@@ -33,7 +33,7 @@ const Hero = () => {
     return (
         <div>
             {/* Entire Page Wrapper */}
-            <div className="w-screen text-black dark:text-white transition-colors duration-500 font-sans">
+            <div className="h-screen w-screen text-black dark:text-white transition-colors duration-500 font-sans overflow-auto">
 
                 {/* Navbar */}
                 <div className="fixed top-4 left-1/2 transform -translate-x-1/2 w-4/5 dark:shadow-slate-100 dark:shadow-sm bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg rounded-full px-6 py-3 flex gap-4 z-50">
