@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useStore from '../../store';
-import axios from 'axios';
+import api from '../utils/api';
 
 const LoginSignupModal = ({ onClose }) => {
   const store = useStore();
@@ -34,7 +34,7 @@ const LoginSignupModal = ({ onClose }) => {
     try {
       const endpoint = isLogin ? '/auth/v1/login' : '/auth/v1/signup';
       const body = { username: formData.username, password: formData.password };
-      const res = await axios.post(import.meta.env.VITE_SERVER_URL + endpoint, body, { withCredentials: false });
+      const res = await api.post(endpoint, body, { withCredentials: true });
 
       if (!isLogin) {
         setSuccessMessage('Signup successful! Please login.');
@@ -48,6 +48,7 @@ const LoginSignupModal = ({ onClose }) => {
         window.location.href = '/dashboard';
       }
     } catch (err) {
+      setIsAuthenticated(false);
       setError((e) => ({
         ...e,
         general: err.response?.data || (isLogin ? 'Login failed' : 'Signup failed'),
