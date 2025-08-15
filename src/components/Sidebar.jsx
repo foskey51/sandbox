@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "../lib/util";
 import {
   IconMenu2,
@@ -9,8 +9,9 @@ import {
   IconUser,
   IconCode,
   IconFileTypeHtml,
-  IconBox,
 } from "@tabler/icons-react";
+import useStore from '../../store';
+import api from "../utils/api";
 
 const sidebarMenuItems = [
   { icon: <IconHome size={20} />, label: "Dashboard", href: "/dashboard" },
@@ -18,7 +19,6 @@ const sidebarMenuItems = [
   { icon: <IconSettings size={20} />, label: "Settings", href: "/settings" },
   { icon: <IconCode size={20} />, label: "Online Compiler", href: "/online-compiler" },
   { icon: <IconFileTypeHtml size={20} />, label: "WebDev Playground", href: "/webdev-playground" },
-  { icon: <IconBox size={20} />, label: "Virtual Box", href: "/virtual-box" },
 ];
 
 const SidebarLink = ({ link, isOpen }) => (
@@ -34,7 +34,7 @@ const SidebarLink = ({ link, isOpen }) => (
   </a>
 );
 
-const SidebarContent = ({ isOpen }) => (
+const SidebarContent = ({ isOpen, profile }) => (
   <div className="flex flex-col h-full overflow-auto">
     {/* Header */}
     <div className="flex flex-col dark:text-white text-lg font-bold py-4">
@@ -57,18 +57,96 @@ const SidebarContent = ({ isOpen }) => (
         <SidebarLink key={link.href} link={link} isOpen={isOpen} />
       ))}
     </div>
+    <div className="mt-auto">
 
-    {/* Footer */}
-    <div className="mt-auto flex items-center gap-2 py-2">
-      <IconUser size={20} className="text-neutral-700 dark:text-neutral-200" />
-      {isOpen && <span className="text-sm text-neutral-700 dark:text-neutral-200">John Doe</span>}
+      {/* Separator line */}
+      <div className="border-t border-2 border-gray-300 dark:bordemy-2"></div>
+
+      {/* Profile section */}
+      <div
+        className={cn(
+          "flex items-center py-2 px-2 transition-all",
+          isOpen ? "justify-start gap-4 mb-1" : "mb-2 flex w-full px-0"
+        )}
+      >
+        <img
+          src={profile?.profileImage || 'https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png'}
+          alt="Profile"
+          className={cn(
+            "w-12 h-12 rounded-full object-cover flex",
+            isOpen ? "mt-1" : "max-w-full"
+          )}
+          onError={(e) => {
+            e.target.src = 'https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_1280.png';
+          }}
+        />
+        {isOpen && (
+          <span className="text-lg leading-20 font-mono font-semibold text-neutral-700 dark:text-neutral-200 truncate">
+            {profile?.fullName.toUpperCase() || "----"}
+          </span>
+        )}
+      </div>
     </div>
+
   </div>
 );
 
 export const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const profile = useStore(state => state.profileData);
+  const { setProfileData } = useStore();
+
+  useEffect(() => {
+    const isValidBase64 = (str) => {
+      if (!str || typeof str !== 'string') return false;
+      try {
+        // Remove data URL prefix if present
+        const base64Str = str.startsWith('data:image') ? str.split(',')[1] : str;
+        // Check if string is valid Base64
+        return /^[A-Za-z0-9+/=]+$/.test(base64Str) && base64Str.length % 4 === 0;
+      } catch {
+        return false;
+      }
+    };
+
+    const formatImageUrl = (base64Str, mimeType = 'image/jpeg') => {
+      if (!base64Str) return null;
+      // If already a data URL, return it
+      if (base64Str.startsWith('data:image')) return base64Str;
+      // Otherwise, add data URL prefix
+      return isValidBase64(base64Str) ? `data:${mimeType};base64,${base64Str}` : null;
+    };
+
+    if (profile === null) {
+      api
+        .get(`/api/v1/profile`, { withCredentials: true })
+        .then((res) => {
+          setProfileData({
+            ...res.data,
+            profileImage: formatImageUrl(res.data.profileImage, 'image/jpeg'),
+          });
+        })
+        .catch((err) => {
+          const status = err?.response?.status;
+
+          if (status === 404) {
+            const defaultProfile = {
+              fullName: err.response.data.fullName || '----',
+              email: err.response.data.email || '----',
+              bio: err.response.data.bio || '',
+              username: err.response.data.username || 'newuser',
+              profileImage: null,
+            };
+
+            setProfileData(defaultProfile);
+
+          } else {
+            console.error('Fetch error:', err);
+          }
+        })
+    }
+  }, []);
 
   return (
     <>
@@ -82,7 +160,7 @@ export const Sidebar = () => {
           onMouseEnter={() => setOpen(true)}
           onMouseLeave={() => setOpen(false)}
         >
-          <SidebarContent isOpen={open} />
+          <SidebarContent isOpen={open} profile={profile} />
         </div>
       </div>
 
@@ -111,7 +189,7 @@ export const Sidebar = () => {
           >
             <IconX />
           </div>
-          <SidebarContent isOpen={true} />
+          <SidebarContent isOpen={true} profile={profile} />
         </div>
       </div>
     </>

@@ -17,6 +17,8 @@ const useStore = create(
       setIsAuthenticated: (value) => set({ isAuthenticated: value }),
       term: null,
       setTerm: (termInstance) => set({ term: termInstance }),
+      profileData: null,
+      setProfileData: (data) => set({ profileData: data }),
     }),
     {
       name: 'sandbox-store',
