@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import Profile from "./pages/Profile";
 import SideBarWrapper from "./components/SideBarWrapper";
+import Logout from "./pages/Logout";
 
 const App = () => {
   const darkMode = useStore(state => state.darkMode);
@@ -26,6 +27,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Hero />} />
+          <Route path="/logout" element={<Logout />} />
           <Route path="*" element={<NotFound />} />
 
           {/* Protected routes */}
