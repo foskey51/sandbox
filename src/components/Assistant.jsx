@@ -4,6 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import useStore from "../../store";
 import { IconCopy } from "@tabler/icons-react";
+import EmptyChatScreen from "./EmptyChatScreen";
 
 const Assistant = () => {
   const textareaRef = useRef(null);
@@ -12,12 +13,12 @@ const Assistant = () => {
   const controllerRef = useRef(null);
   const shouldStreamRef = useRef(true);
 
-  const [input, setInput] = useState("");
+  const chatboxInput = useStore(state => state.chatboxInput);
+  const { setChatboxInput } = useStore();
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [hasAssistantStarted, setHasAssistantStarted] = useState(false);
   const darkMode = useStore(state => state.darkMode);
-  const controller = new AbortController();
 
   const handleInput = () => {
     const textarea = textareaRef.current;
@@ -28,12 +29,12 @@ const Assistant = () => {
   };
 
   const handleSubmit = async () => {
-    if (!input.trim() || isLoading) return;
-
-    const newMessages = [...messages, { role: "user", content: input }];
+    if (!chatboxInput.trim() || isLoading) return;
+    const newMessages = [...messages, { role: "user", content: chatboxInput }];
     setMessages(newMessages);
-    setInput("");
+    setChatboxInput("");
     setIsLoading(true);
+    setHasAssistantStarted(false);
     shouldStreamRef.current = true;
     controllerRef.current = new AbortController();
 
@@ -54,7 +55,7 @@ const Assistant = () => {
             ...newMessages,
           ],
         }),
-        signal: controller.signal,
+        signal: controllerRef.current.signal,
       });
 
       const reader = response.body.getReader();
@@ -63,10 +64,8 @@ const Assistant = () => {
 
       while (true) {
         if (!shouldStreamRef.current) break;
-
         const { value, done } = await reader.read();
         if (done) break;
-
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split("\n").filter(Boolean);
 
@@ -74,12 +73,11 @@ const Assistant = () => {
           try {
             const parsed = JSON.parse(line);
             if (parsed.message?.content && shouldStreamRef.current) {
+              if (!hasAssistantStarted) setHasAssistantStarted(true);
               assistantMessage += parsed.message.content;
               setMessages([...newMessages, { role: "assistant", content: assistantMessage }]);
             }
-          } catch (err) {
-            console.error("Failed to parse chunk:", line, err);
-          }
+          } catch { }
         }
       }
     } catch (error) {
@@ -94,21 +92,7 @@ const Assistant = () => {
   const stopStreaming = () => {
     shouldStreamRef.current = false;
     controllerRef.current?.abort();
-    controller.abort();
     setIsLoading(false);
-  };
-
-  const handleScroll = () => {
-    const container = chatContainerRef.current;
-    if (!container) return;
-
-    const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 10;
-    setShowScrollButton(!isAtBottom);
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    setShowScrollButton(false);
   };
 
   const handleKeyDown = (e) => {
@@ -121,7 +105,7 @@ const Assistant = () => {
   const clearChat = () => {
     if (window.confirm("Are you sure you want to clear the chat?")) {
       setMessages([]);
-      setInput("");
+      setChatboxInput("");
       shouldStreamRef.current = false;
       controllerRef.current?.abort();
     }
@@ -130,14 +114,12 @@ const Assistant = () => {
   const copyToClipboard = async (code) => {
     try {
       await navigator.clipboard.writeText(code);
-    } catch (err) {
-      console.error("Copy failed", err);
-    }
+    } catch { }
   };
 
   useEffect(() => {
     handleInput();
-  }, [input]);
+  }, [chatboxInput]);
 
   useLayoutEffect(() => {
     const el = messagesEndRef.current;
@@ -146,7 +128,6 @@ const Assistant = () => {
     }
   }, [messages]);
 
-  // Icons
   const SendIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
@@ -164,13 +145,60 @@ const Assistant = () => {
       onClick={() => copyToClipboard(code)} />
   );
 
-  const ScrollDownArrow = () => (
-    <button
-      onClick={scrollToBottom}
-      className="absolute left-1/2 transform -translate-x-1/2 bottom-24 dark:bg-black dark:text-white bg-white text-black p-2 rounded-full shadow-md z-10"
+  const SkeletonLoader = () => (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        width: "100%",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        zIndex: 10,
+      }}
+      className="animate-pulse"
     >
-      ↓
-    </button>
+      <div
+        style={{
+          padding: "1rem",
+          borderRadius: "0.75rem",
+          width: "100%",
+          maxWidth: "97%",
+          backgroundColor: darkMode ? "#1F2A44" : "#E5E7EB",
+          border: darkMode ? "1px solid #4B5563" : "1px solid #9CA3AF",
+        }}
+      >
+        <div
+          style={{
+            height: "1rem",
+            backgroundColor: darkMode ? "#4B5563" : "#D1D5DB",
+            borderRadius: "0.25rem",
+            width: "75%",
+            margin: "0 auto 0.5rem",
+          }}
+        ></div>
+        <div
+          style={{
+            height: "1rem",
+            backgroundColor: darkMode ? "#4B5563" : "#D1D5DB",
+            borderRadius: "0.25rem",
+            width: "50%",
+            margin: "0 auto 0.5rem",
+          }}
+        ></div>
+        <div
+          style={{
+            height: "1rem",
+            backgroundColor: darkMode ? "#4B5563" : "#D1D5DB",
+            borderRadius: "0.25rem",
+            width: "66%",
+            margin: "0 auto",
+          }}
+        ></div>
+      </div>
+    </div>
   );
 
   const renderers = {
@@ -192,22 +220,21 @@ const Assistant = () => {
 
   return (
     <div className="flex flex-col h-full w-full dark:bg-black dark:text-white bg-white text-black relative">
-      {/* Header */}
       <div className="flex justify-center items-center py-4 border-b border-black dark:border-gray-700">
         <h1 className="text-lg font-semibold">Llama AI</h1>
       </div>
 
-      {/* Chat Area */}
       <div
         ref={chatContainerRef}
-        onScroll={handleScroll}
-        className="flex-1 min-h-0 overflow-y-auto py-3 space-y-4"
+        className="flex-1 min-h-0 overflow-y-auto py-3 space-y-4 relative"
       >
+        {messages.length === 0 && !isLoading && <EmptyChatScreen />}
+
         {messages.map((msg, idx) => (
-          <div key={idx} className="w-full flex justify-center">
+          <div key={idx} className="w-full flex flex-col items-center">
             <div
               className={`p-3 rounded-xl max-w-full w-full md:max-w-[97%] whitespace-pre-wrap break-words border overflow-x-auto
-                ${msg.role === "user"
+        ${msg.role === "user"
                   ? "text-black dark:text-white dark:border-white border-black text-center"
                   : "bg-gray-200 dark:bg-gray-800 text-black dark:text-white border-gray-400 dark:border-gray-700"
                 }`}
@@ -218,23 +245,24 @@ const Assistant = () => {
                 msg.content
               )}
             </div>
+            {isLoading && !hasAssistantStarted && idx === messages.length - 1 && msg.role === "user" && (
+              <div className="w-full flex justify-center mt-10 relative">
+                <SkeletonLoader />
+              </div>
+            )}
           </div>
         ))}
+
         <div ref={messagesEndRef} className="h-4" />
       </div>
 
-      {/* Scroll to bottom arrow */}
-      {showScrollButton && <ScrollDownArrow />}
 
-      {/* Input Area */}
       <div className="border-t border-black dark:border-gray-700 px-4 py-3 flex items-end relative gap-2">
-
-        {/* Textarea + Send */}
         <div className="flex w-full bg-white dark:bg-black border border-black dark:border-gray-700 rounded-xl px-3">
           <textarea
             ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={chatboxInput}
+            onChange={(e) => setChatboxInput(e.target.value)}
             onInput={handleInput}
             onKeyDown={handleKeyDown}
             className="flex-1 bg-transparent text-left text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 

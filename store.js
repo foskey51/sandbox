@@ -19,6 +19,8 @@ const useStore = create(
       setTerm: (termInstance) => set({ term: termInstance }),
       profileData: null,
       setProfileData: (data) => set({ profileData: data }),
+      chatboxInput : "",
+      setChatboxInput: (data) => set({chatboxInput: data}),
     }),
     {
       name: 'sandbox-store',
