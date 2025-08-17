@@ -2,6 +2,7 @@ import { DarkModeIcon, LightModeIcon, PlayIcon, StopIcon, ResetIcon } from "../u
 import useStore from "../../store";
 import { useState } from "react";
 import useCodeExecService from "../service/useCodeExecService";
+import { useEffect, useRef } from "react";
 
 const NavBar = () => {
     const store = useStore();
@@ -12,19 +13,39 @@ const NavBar = () => {
     const languageList = useStore(state => state.languageList);
     const { connect, close } = useCodeExecService();
 
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setDropdownVisible(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const toggleDarkMode = () => {
         setDarkMode(!darkMode);
     };
 
     const renderList = (words) => {
         return (
-            <div className="fixed top-12 right-16 z-10 dark:bg-gray-800 dark:text-white bg-white text-black border border-gray-400 rounded-md shadow-md">
+            <div
+                ref={dropdownRef}
+                className="fixed top-12 right-14 z-10 dark:bg-gray-800 dark:text-white bg-white text-black border border-gray-400 rounded-md shadow-md overflow-y-auto max-h-[15rem]"
+            >
                 <ul>
                     {words.map((word, index) => (
                         <li
                             key={index}
-                            onClick={() => { setLanguageName(word); }}
-                            className="p-1 cursor-pointer truncate ease-in-out dark:text-white dark:hover:bg-gray-700 text-black hover:bg-gray-100"
+                            onClick={() => {
+                                setLanguageName(word);
+                                setDropdownVisible(false);
+                            }}
+                            className="p-1 cursor-pointer text-balance font-mono truncate ease-in-out border-b-2 border-2 dark:text-white dark:hover:bg-gray-700 text-black hover:bg-gray-100"
                         >
                             {word}
                         </li>
@@ -39,43 +60,25 @@ const NavBar = () => {
             <div className="flex p-4 dark:bg-black dark:text-white bg-white text-black">
                 <span className="text-xl font-mono font-semibold">Sandbox</span>
                 <div className="flex ml-auto left-1/2 transform translate-x-1/2 mt-1 space-x-4">
-                    <div
-                        onClick={() => {
-                            connect();
-                        }}>
+                    <button onClick={connect} >
                         <PlayIcon />
-                    </div>
-
-                    <div
-                        onClick={() => {
-                            close();
-                        }}>
+                    </button>
+                    <button onClick={close}>
                         <StopIcon />
-                    </div>
-
-                    <div
-                        onClick={() => {
-                            console.log("clicked reset");
-                        }}>
+                    </button>
+                    <button onClick={() => console.log("clicked reset")}>
                         <ResetIcon />
-                    </div>
+                    </button>
                 </div>
                 {isDropdownVisible && renderList(languageList)}
-                <div className="ml-auto flex space-x-3 items-center justify-end relative">
+                <div className="ml-auto w-[28%] flex space-x-3 items-center justify-end relative">
                     <span className="font-mono relative z-10">Language</span>
-                    <input
-                        className="border-gray-400 border-[1px] w-[40%] rounded-md text-center focus:outline-none text-sm truncate dark:bg-gray-800 dark:text-white bg-white text-black"
-                        type="text"
-                        placeholder={languageName}
-                        value={languageName}
-                        onFocus={() => {
-                            setDropdownVisible(true);
-                        }}
-                        onBlur={() => {
-                            setTimeout(() => setDropdownVisible(false), 200);
-                        }}
-                        readOnly={true}
-                    />
+                    <div
+                        className="border-gray-400 border-[1px] w-full leading-relaxed rounded-md text-center text-sm truncate dark:bg-gray-800 dark:text-white bg-white text-black cursor-pointer"
+                        onClick={() => setDropdownVisible(true)}
+                    >
+                        {languageName || "Select Language"}
+                    </div>
                     <button onClick={toggleDarkMode}>
                         {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
                     </button>
