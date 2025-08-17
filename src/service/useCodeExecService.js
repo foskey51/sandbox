@@ -49,7 +49,7 @@ const useCodeExecService = () => {
       if (event.code === 1011) {
         term?.writeln('\r\nServer error. Please try again later.');
       } else {
-        term?.writeln(`\r\nConnection closed (code: ${event.code}, reason: ${event.reason || "no reason"}).`);
+        term?.writeln('Error occurred!! Please try again later....');
       }
     };
 
