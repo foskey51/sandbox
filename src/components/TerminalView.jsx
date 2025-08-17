@@ -63,11 +63,23 @@ const TerminalView = () => {
     }
   }, [darkMode]);
 
+  const handleClear = () => {
+    if (termRef.current) {
+      termRef.current.clear();
+    }
+  };
+
   return (
     <div className="flex flex-col w-full h-full mb-12 ">
       {/* Header (fixed) */}
-      <div className="flex items-center justify-between px-4 py-2 border-b-2 border-b-gray-400">
-        <span className="font-medium dark:text-white text-black">Terminal</span>
+      <div className="flex items-center justify-between px-4 py-2 border-b-2 dark:text-white text-black border-b-gray-400">
+        <span className="font-medium ">Terminal</span>
+        <button
+          onClick={handleClear}
+          className="border-2 border-gray-500 dark:border-gray-200 px-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 hover:scale-105"
+        >
+          Clear
+        </button>
       </div>
 
       {/* Terminal Area (scrollable) */}
