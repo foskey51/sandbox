@@ -38,13 +38,19 @@ const useCodeExecService = () => {
 
 
     socket.onerror = (event) => {
-     // term?.writeln('WebSocket error occurred.');
+      term?.writeln('Error occurred!! Please try again later....');
       console.error('WebSocket error:', event);
     };
 
     socket.onclose = (event) => {
-      //term?.writeln('\r\nConnection closed.');
+      console.log(event);
       console.warn('WebSocket closed:', event);
+
+      if (event.code === 1011) {
+        term?.writeln('\r\nServer error. Please try again later.');
+      } else {
+        term?.writeln(`\r\nConnection closed (code: ${event.code}, reason: ${event.reason || "no reason"}).`);
+      }
     };
 
     term?.onData((data) => {
