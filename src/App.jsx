@@ -10,6 +10,8 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import Profile from "./pages/Profile";
 import SideBarWrapper from "./components/SideBarWrapper";
 import Logout from "./pages/Logout";
+import Dashboard from "./pages/Dashboard";
+import Settings from "./pages/Settings";
 
 const App = () => {
   const darkMode = useStore(state => state.darkMode);
@@ -32,9 +34,11 @@ const App = () => {
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/online-compiler" element={<OnlineCompiler />} />
+            <Route path="/dashboard" element={<SideBarWrapper><Dashboard /></SideBarWrapper>} />
+            <Route path="/online-compiler" element={<SideBarWrapper><OnlineCompiler /></SideBarWrapper>} />
             <Route path="/webdev-playground" element={<SideBarWrapper><WebDev /></SideBarWrapper>} />
             <Route path="/profile" element={<SideBarWrapper><Profile /></SideBarWrapper>} />
+            <Route path="/settings" element={<SideBarWrapper><Settings /></SideBarWrapper>} />
           </Route>
 
         </Routes>

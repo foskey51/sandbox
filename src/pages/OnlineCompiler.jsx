@@ -3,13 +3,11 @@ import NavBar from "../components/NavBar";
 import Split from "react-split";
 import MonacoEditor from "../components/MonacoEditor";
 import TerminalView from "../components/TerminalView";
-import Sidebar from "../components/Sidebar";
 
 const OnlineCompiler = () => {
 
   return (
     <div className="flex h-screen w-screen overflow-auto bg-white dark:bg-[#0D1117]">
-      <Sidebar />
 
       {/* Assistant Panel */}
       <div className="flex flex-col h-full w-full overflow-hidden">
