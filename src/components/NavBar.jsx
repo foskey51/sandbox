@@ -1,4 +1,4 @@
-import { DarkModeIcon, LightModeIcon, PlayIcon, StopIcon, ResetIcon } from "../utils/Icons"
+import { DarkModeIcon, LightModeIcon, PlayIcon, StopIcon, ResetIcon, Loading } from "../utils/Icons"
 import useStore from "../../store";
 import { useState } from "react";
 import useCodeExecService from "../service/useCodeExecService";
@@ -7,8 +7,9 @@ import { useEffect, useRef } from "react";
 const NavBar = () => {
     const store = useStore();
     const darkMode = useStore(state => state.darkMode);
+    const loading = useStore(state => state.loading);
     const [isDropdownVisible, setDropdownVisible] = useState(false);
-    const { setLanguageName, setDarkMode } = store;
+    const { setLanguageName, setDarkMode, setLoading } = store;
     const languageName = useStore(state => state.languageName);
     const languageList = useStore(state => state.languageList);
     const { connect, close } = useCodeExecService();
@@ -60,9 +61,11 @@ const NavBar = () => {
             <div className="flex p-4 dark:bg-black dark:text-white bg-white text-black">
                 <span className="text-xl font-mono font-semibold">Sandbox</span>
                 <div className="flex ml-auto left-1/2 transform translate-x-1/2 mt-1 space-x-4">
-                    <button onClick={connect} >
-                        <PlayIcon />
-                    </button>
+                    {loading ? (<Loading />) : (
+                        <button onClick={() => { connect(); setLoading(true); }} >
+                            <PlayIcon />
+                        </button>
+                    )}
                     <button onClick={close}>
                         <StopIcon />
                     </button>
