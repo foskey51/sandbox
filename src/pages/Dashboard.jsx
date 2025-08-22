@@ -17,15 +17,15 @@ const servicesData = [
         description: "Practice and run code in multiple languages.",
         icon: CodeBracketIcon,
         href: "/online-compiler",
-        gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHViYXpjNDlydHlkMGdmeTRrM3FycDBpYWV3OHQ0cG9tZ2Q3MzdzciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ZVik7pBtu9dNS/giphy.gif",
+        gif: "https://i.ibb.co/FL5Hs9k9/Screenshot-2025-08-20-at-19-54-34-Sandbox.png",
     },
     {
         id: "webdev",
         title: "WebDev Playground",
-        description: "Build and preview HTML, CSS, and JS instantly.",
+        description: "Build and preview HTML, CSS, and JS.",
         icon: GlobeAltIcon,
         href: "/webdev-playground",
-        gif: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHViYXpjNDlydHlkMGdmeTRrM3FycDBpYWV3OHQ0cG9tZ2Q3MzdzciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/ZVik7pBtu9dNS/giphy.gif",
+        gif: "https://i.postimg.cc/G3shHYmv/Screenshot-2025-08-20-at-20-07-00-Sandbox.png",
     },
 ];
 
@@ -214,12 +214,13 @@ const Dashboard = () => {
                                 return (
                                     <div
                                         key={s.id}
-                                        className="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden p-4 flex flex-col items-center text-center hover:shadow-2xl transition-shadow duration-300"
+                                        className="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden p-4 flex flex-col items-center text-center hover:shadow-2xl transition-shadow duration-300 cursor-pointerf"
+                                        onClick={() => (window.location.href = s.href)}
                                     >
                                         <img
                                             src={s.gif}
                                             alt={`${s.title} preview`}
-                                            className="w-full h-36 object-cover rounded-lg mb-3"
+                                            className="w-full h-36 object-fill rounded-lg mb-3"
                                         />
                                         <Icon className="h-8 w-8 text-black dark:text-white mb-2" />
                                         <h3 className="text-lg font-semibold text-black dark:text-white mb-1">{s.title}</h3>
