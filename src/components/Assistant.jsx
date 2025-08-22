@@ -41,7 +41,7 @@ const Assistant = () => {
     try {
       const systemMessage = {
         role: "system",
-        content: "You are an interactive programming tutor for an online compiler. You teach programming languages by providing clear, short complete code examples along with concise explanations. Always ask the user a follow-up question to keep the conversation concise and going and encourage deeper learning.",
+        content: `You are an interactive programming tutor. You teach programming languages by providing clear, short complete code examples along with short explanations.For java always use App as main class name. Always ask the user a follow-up question.`,
       };
 
       const response = await fetch(`${import.meta.env.VITE_LLM_URL}/api/chat`, {
@@ -77,7 +77,9 @@ const Assistant = () => {
               assistantMessage += parsed.message.content;
               setMessages([...newMessages, { role: "assistant", content: assistantMessage }]);
             }
-          } catch { }
+          } catch { 
+            console.error("Error parsing Data");
+          }
         }
       }
     } catch (error) {
@@ -246,7 +248,7 @@ const Assistant = () => {
               )}
             </div>
             {isLoading && !hasAssistantStarted && idx === messages.length - 1 && msg.role === "user" && (
-              <div className="w-full flex justify-center mt-10 relative">
+              <div className="w-full flex justify-center mt-16 relative">
                 <SkeletonLoader />
               </div>
             )}
