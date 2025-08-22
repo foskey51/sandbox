@@ -2,15 +2,18 @@ import { useCallback, useRef } from 'react';
 import useStore from '../../store';
 
 const useCodeExecService = () => {
+  const { setLoading } = useStore();
   const socketRef = useRef(null);
   const term = useStore(state => state.term);
   const languageVal = useStore(state => state.languageName);
   const codeVal = useStore(state => state.editorVal);
+  let dataListener = null;
 
   const connect = useCallback(() => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.close();
     }
+    term?.reset();
 
     const socket = new WebSocket(import.meta.env.VITE_WSS_ENDPOINT);
     socket.binaryType = 'arraybuffer';
@@ -26,6 +29,7 @@ const useCodeExecService = () => {
     };
 
     socket.onmessage = (event) => {
+      setLoading(false);
       if (!term) return;
 
       const data = typeof event.data === 'string'
@@ -36,24 +40,25 @@ const useCodeExecService = () => {
 
     };
 
-
     socket.onerror = (event) => {
+      setLoading(false);
       term?.writeln('Error occurred!! Please try again later....');
       console.error('WebSocket error:', event);
     };
 
     socket.onclose = (event) => {
-      console.log(event);
+      setLoading(false);
       console.warn('WebSocket closed:', event);
 
-      if (event.code === 1011) {
+      if (event.code != 1000) {
         term?.writeln('\r\nServer error. Please try again later.');
-      } else {
-        term?.writeln('Error occurred!! Please try again later....');
       }
     };
 
-    term?.onData((data) => {
+    if (dataListener) {
+      dataListener.dispose();
+    }
+    dataListener = term?.onData((data) => {
       if (socketRef.current?.readyState === WebSocket.OPEN) {
         socketRef.current.send(data);
       }
@@ -61,6 +66,7 @@ const useCodeExecService = () => {
   }, [term, languageVal, codeVal]);
 
   const close = useCallback(() => {
+    setLoading(false);
     if (socketRef.current) {
       socketRef.current.close();
       socketRef.current = null;

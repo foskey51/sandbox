@@ -23,6 +23,7 @@ const TerminalView = () => {
       },
       scrollback: 1000,
       allowTransparency: true,
+      disableStdin: false,
     });
     termRef.current = term;
     setTerm(term);
@@ -65,7 +66,7 @@ const TerminalView = () => {
 
   const handleClear = () => {
     if (termRef.current) {
-      termRef.current.clear();
+      termRef.current.reset();
     }
   };
 
