@@ -15,10 +15,10 @@ import api from "../utils/api";
 
 const sidebarMenuItems = [
   { icon: <IconHome size={20} />, label: "Dashboard", href: "/dashboard" },
-  { icon: <IconUser size={20} />, label: "Profile", href: "/profile" },
-  { icon: <IconSettings size={20} />, label: "Settings", href: "/settings" },
   { icon: <IconCode size={20} />, label: "Online Compiler", href: "/online-compiler" },
   { icon: <IconFileTypeHtml size={20} />, label: "WebDev Playground", href: "/webdev-playground" },
+  { icon: <IconUser size={20} />, label: "Profile", href: "/profile" },
+  { icon: <IconSettings size={20} />, label: "Settings", href: "/settings" },
 ];
 
 const SidebarLink = ({ link, isOpen }) => (
