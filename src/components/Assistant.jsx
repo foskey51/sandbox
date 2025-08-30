@@ -222,7 +222,7 @@ const Assistant = () => {
 
   return (
     <div className="flex flex-col h-full w-full dark:bg-black dark:text-white bg-white text-black relative">
-      <div className="flex justify-center items-center py-4 border-b border-black dark:border-gray-700">
+      <div className="flex justify-center items-center py-3 border-b border-gray-300">
         <h1 className="text-lg font-semibold">Llama AI</h1>
       </div>
 
