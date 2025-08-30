@@ -58,34 +58,37 @@ const NavBar = () => {
 
     return (
         <>
-            <div className="flex p-4 dark:bg-black dark:text-white bg-white text-black">
-                <span className="text-xl font-mono font-semibold">Sandbox</span>
-                <div className="flex ml-auto left-1/2 transform translate-x-1/2 mt-1 space-x-4">
-                    {loading ? (<Loading />) : (
-                        <button onClick={() => { connect(); setLoading(true); }} >
-                            <PlayIcon />
+            <div className="flex flex-col">
+                <div className="flex p-4 dark:bg-black dark:text-white bg-white text-black">
+                    <span className="text-xl font-mono font-semibold">Sandbox</span>
+                    <div className="flex ml-auto left-1/2 transform translate-x-1/2 mt-1 space-x-4">
+                        {loading ? (<Loading />) : (
+                            <button onClick={() => { connect(); setLoading(true); }} >
+                                <PlayIcon />
+                            </button>
+                        )}
+                        <button onClick={close}>
+                            <StopIcon />
                         </button>
-                    )}
-                    <button onClick={close}>
-                        <StopIcon />
-                    </button>
-                    <button onClick={() => console.log("clicked reset")}>
-                        <ResetIcon />
-                    </button>
-                </div>
-                {isDropdownVisible && renderList(languageList)}
-                <div className="ml-auto w-[28%] flex space-x-3 items-center justify-end relative">
-                    <span className="font-mono relative z-10">Language</span>
-                    <div
-                        className="border-gray-400 border-[1px] w-full leading-relaxed rounded-md text-center text-sm truncate dark:bg-gray-800 dark:text-white bg-white text-black cursor-pointer"
-                        onClick={() => setDropdownVisible(true)}
-                    >
-                        {languageName || "Select Language"}
+                        <button onClick={() => console.log("clicked reset")}>
+                            <ResetIcon />
+                        </button>
                     </div>
-                    <button onClick={toggleDarkMode}>
-                        {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
-                    </button>
+                    {isDropdownVisible && renderList(languageList)}
+                    <div className="ml-auto w-[28%] flex space-x-3 items-center justify-end relative">
+                        <span className="font-mono relative z-10">Language</span>
+                        <div
+                            className="border-gray-400 border-[1px] w-full leading-relaxed rounded-md text-center text-sm truncate dark:bg-gray-800 dark:text-white bg-white text-black cursor-pointer"
+                            onClick={() => setDropdownVisible(true)}
+                        >
+                            {languageName || "Select Language"}
+                        </div>
+                        <button onClick={toggleDarkMode}>
+                            {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+                        </button>
+                    </div>
                 </div>
+                <span className="p-[0.5px] bg-gray-300"></span>
             </div>
         </>
     );
