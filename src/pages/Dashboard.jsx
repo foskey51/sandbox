@@ -107,9 +107,9 @@ const Dashboard = () => {
         <div className="h-full w-full flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors">
             {/* NAVBAR */}
             <nav className="w-full flex-shrink-0 bg-gray-200 dark:bg-gray-800 h-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+                <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <SparklesIcon className="h-6 w-6 text-black dark:text-white" />
+                        <img src="/logo.jpg" className="h-6 w-6 rounded-md"></img>
                         <span className="font-bold text-xl tracking-tight">Sandbox</span>
                     </div>
                     <div className="flex items-center gap-4" ref={dropdownRef}>
