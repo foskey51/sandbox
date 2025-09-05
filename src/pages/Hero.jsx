@@ -8,27 +8,6 @@ const Hero = () => {
     const darkMode = useStore(state => state.darkMode);
     const { setDarkMode } = store;
     const [showLogin, setShowLogin] = useState(false);
-    const [activeFAQ, setActiveFAQ] = useState(null);
-
-    const toggleFAQ = (index) => {
-        setActiveFAQ((prev) => (prev === index ? null : index));
-    };
-
-    const faqs = [
-        {
-            question: "Do I need to install anything?",
-            answer: "Nope! Everything runs in your browser. Just open Sandbox and start coding."
-        },
-        {
-            question: "Is it free to use?",
-            answer: "Yes, basic features are free forever. Pro features are available at a low cost."
-        },
-        {
-            question: "Can I run full-stack apps?",
-            answer: "Absolutely! You can build, preview, and deploy frontend and backend code directly in Sandbox."
-        }
-    ];
-
 
     return (
         <div>
@@ -87,42 +66,6 @@ const Hero = () => {
                     </div>
                     <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
                         <MouseScroll />
-                    </div>
-                </section>
-
-                {/* Section 2: FAQ */}
-                <section className="py-24 px-6 bg-neutral-50 dark:bg-neutral-950">
-                    <div className="max-w-3xl mx-auto">
-                        <h2 className="text-3xl font-bold text-center mb-14 text-gray-900 dark:text-white">
-                            Frequently Asked Questions
-                        </h2>
-
-                        <div className="divide-y divide-neutral-300 dark:divide-neutral-700">
-                            {faqs.map((faq, i) => (
-                                <div key={i} className="py-6">
-                                    <button
-                                        onClick={() => toggleFAQ(i)}
-                                        className="w-full flex justify-between items-center text-left"
-                                    >
-                                        <span className="text-lg sm:text-xl font-medium text-gray-800 dark:text-gray-100">
-                                            {faq.question}
-                                        </span>
-                                        <span className="ml-4 text-2xl text-neutral-500 dark:text-neutral-400">
-                                            {activeFAQ === i ? '−' : '+'}
-                                        </span>
-                                    </button>
-
-                                    <div
-                                        className={`overflow-hidden transition-all duration-300 ease-in-out ${activeFAQ === i ? 'mt-3 max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                                            }`}
-                                    >
-                                        <p className="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed">
-                                            {faq.answer}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
                     </div>
                 </section>
 
