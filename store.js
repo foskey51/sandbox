@@ -4,8 +4,8 @@ import { persist } from "zustand/middleware";
 const useStore = create(
   persist(
     (set) => ({
-      terminalCollapsed: true,
-      setTerminalCollapsed: (value) => set({ terminalCollapsed: value }),
+      messages: [],
+      setMessages: (newMessages) => set({ messages: newMessages }),
       languageName: 'JavaScript',
       setLanguageName: (value) => set({ languageName: value }),
       languageList: ["Java", "JavaScript", "C", "Cpp", "Php", "Rust", "Go", "Csharp"],
@@ -32,6 +32,7 @@ const useStore = create(
         editorTheme: state.editorTheme,
         editorVal: state.editorVal,
         isAuthenticated: state.isAuthenticated,
+        messages: state.messages,
       }),
     }
   )

@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import useStore from "../store";
 import "./App.css"
 import OnlineCompiler from "./pages/OnlineCompiler";
@@ -27,6 +29,20 @@ const App = () => {
   return (
     <>
       <BrowserRouter>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme={darkMode ? "dark" : "light"}
+        />
+        
         <Routes>
           <Route path="/" element={<Hero />} />
           <Route path="/logout" element={<Logout />} />

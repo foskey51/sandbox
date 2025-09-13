@@ -3,8 +3,9 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
 import useStore from "../../store";
-import { IconCopy } from "@tabler/icons-react";
+import { IconCopy, IconDotsVertical, IconTrash } from "@tabler/icons-react";
 import EmptyChatScreen from "./EmptyChatScreen";
+import { toast } from "react-toastify";
 
 const Assistant = () => {
   const textareaRef = useRef(null);
@@ -14,11 +15,12 @@ const Assistant = () => {
   const shouldStreamRef = useRef(true);
 
   const chatboxInput = useStore(state => state.chatboxInput);
-  const { setChatboxInput } = useStore();
-  const [messages, setMessages] = useState([]);
+  const { setChatboxInput, setMessages } = useStore();
+  const messages = useStore(state => state.messages);
   const [isLoading, setIsLoading] = useState(false);
   const [hasAssistantStarted, setHasAssistantStarted] = useState(false);
   const darkMode = useStore(state => state.darkMode);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleInput = () => {
     const textarea = textareaRef.current;
@@ -77,7 +79,7 @@ const Assistant = () => {
               assistantMessage += parsed.message.content;
               setMessages([...newMessages, { role: "assistant", content: assistantMessage }]);
             }
-          } catch { 
+          } catch {
             console.error("Error parsing Data");
           }
         }
@@ -104,20 +106,26 @@ const Assistant = () => {
     }
   };
 
-  const clearChat = () => {
+  const handleClearChat = () => {
     if (window.confirm("Are you sure you want to clear the chat?")) {
       setMessages([]);
       setChatboxInput("");
+      toast.success("Chats cleared");
       shouldStreamRef.current = false;
       controllerRef.current?.abort();
+      setMenuOpen(!menuOpen);
     }
   };
+
 
   const copyToClipboard = async (code) => {
     try {
       await navigator.clipboard.writeText(code);
-    } catch { }
-  };
+      toast.success("Copied to clipboard");
+    } catch {
+      toast.error("!! Error copying text !!");
+    }
+  }
 
   useEffect(() => {
     handleInput();
@@ -222,8 +230,31 @@ const Assistant = () => {
 
   return (
     <div className="flex flex-col h-full w-full dark:bg-black dark:text-white bg-white text-black relative">
-      <div className="flex justify-center items-center py-3 border-b border-gray-300">
-        <h1 className="text-lg font-semibold">Llama AI</h1>
+      <div className="flex items-center justify-between py-[1.07rem] border-b border-gray-300 relative">
+        <h1 className="text-lg font-bold absolute left-1/2 transform -translate-x-1/2">
+          Sandbox AI
+        </h1>
+
+        {/* Dots + Dropdown wrapper */}
+        <div className="relative ml-auto">
+          <IconDotsVertical
+            onClick={() => setMenuOpen(!menuOpen)}
+            size={18}
+            className="cursor-pointer"
+          />
+
+          {menuOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded shadow-md z-50">
+              <button
+                onClick={handleClearChat}
+                className="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <IconTrash size={18} className="text-red-500" />
+                Clear Chat
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div
