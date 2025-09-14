@@ -15,7 +15,7 @@ export default function Logout() {
     }, [countdown, navigate]);
 
     useEffect(() => {
-        api.post('/auth/v1/logout', null, { withCredentials: true }).catch((error) => {
+        api.post('/auth/v1/logout').catch((error) => {
             console.error('Logout failed:', error);
         });
         setIsAuthenticated(false);

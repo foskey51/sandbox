@@ -34,7 +34,7 @@ const LoginSignupModal = ({ onClose }) => {
     try {
       const endpoint = isLogin ? '/auth/v1/login' : '/auth/v1/signup';
       const body = { username: formData.username, password: formData.password };
-      const res = await api.post(endpoint, body, { withCredentials: true });
+      const res = await api.post(endpoint, body);
 
       if (!isLogin) {
         setSuccessMessage('Signup successful! Please login.');
