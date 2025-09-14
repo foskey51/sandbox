@@ -6,6 +6,7 @@ import LoginSignupModal from "./LoginSignupModal";
 const Hero = () => {
     const store = useStore();
     const darkMode = useStore(state => state.darkMode);
+    const isAuthenticated = useStore(state => state.isAuthenticated);
     const { setDarkMode } = store;
     const [showLogin, setShowLogin] = useState(false);
 
@@ -48,7 +49,7 @@ const Hero = () => {
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center items-center sm:space-x-4 space-y-3 sm:space-y-0">
                             <button
-                                onClick={() => setShowLogin(true)}
+                                onClick={() => isAuthenticated ? window.open("/dashboard","_self") : setShowLogin(true)}
                                 className="flex items-center justify-center bg-yellow-700 text-white px-6 py-2 rounded hover:bg-yellow-600 transition"
                             >
                                 Get Started
