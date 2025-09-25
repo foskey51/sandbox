@@ -120,7 +120,7 @@ export const Sidebar = () => {
 
     if (profile === null) {
       api
-        .get(`/api/v1/profile`, { withCredentials: true })
+        .get(`/api/v1/profile`)
         .then((res) => {
           setProfileData({
             ...res.data,

@@ -40,7 +40,7 @@ const Profile = () => {
 
   useEffect(() => {
     api
-      .get(`/api/v1/profile`, { withCredentials: true })
+      .get(`/api/v1/profile`)
       .then((res) => {
         setProfile({
           ...res.data,
@@ -106,10 +106,7 @@ const Profile = () => {
     console.log('Profile picture file:', file.name, file.type, file.size);
 
     try {
-      const response = await api.patch(`/api/v1/profile/update`, formData, {
-        withCredentials: true,
-      });
-      console.log('Profile picture update response:', response.data);
+      const response = await api.patch(`/api/v1/profile/update`, formData);
       const imageUrl = formatImageUrl(response.data.profileImage, file.type);
       if (!imageUrl) {
         throw new Error('Invalid Base64 image data');
@@ -164,13 +161,11 @@ const Profile = () => {
         `/api/v1/profile/update`,
         { [field]: value },
         {
-          withCredentials: true,
           headers: {
             'Content-Type': 'application/json',
           },
         }
       );
-      console.log(`Update ${field} response:`, response.data);
       setProfile((prev) => ({
         ...prev,
         [field]: response.data[field],
