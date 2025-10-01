@@ -1,5 +1,5 @@
 import Assistant from "../components/Assistant";
-import NavBar from "../components/NavBar";
+import EditorNavbar from "../components/EditorNavbar";
 import Split from "react-split";
 import MonacoEditor from "../components/MonacoEditor";
 import TerminalView from "../components/TerminalView";
@@ -30,7 +30,7 @@ const OnlineCompilerPage = () => {
           {/* Right side: NavBar + Editor + Terminal */}
           <div className="flex flex-col h-full w-full">
 
-            <NavBar />
+            <EditorNavbar />
 
             {/* Editor and Terminal Split */}
             <Split
