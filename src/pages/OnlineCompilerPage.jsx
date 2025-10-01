@@ -4,7 +4,7 @@ import Split from "react-split";
 import MonacoEditor from "../components/MonacoEditor";
 import TerminalView from "../components/TerminalView";
 
-const OnlineCompiler = () => {
+const OnlineCompilerPage = () => {
 
   return (
     <div className="flex h-screen w-screen overflow-auto bg-white dark:bg-[#0D1117]">
@@ -62,4 +62,4 @@ const OnlineCompiler = () => {
   );
 };
 
-export default OnlineCompiler;
+export default OnlineCompilerPage;

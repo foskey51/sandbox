@@ -3,17 +3,17 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useStore from "../store";
 import "./App.css"
-import OnlineCompiler from "./pages/OnlineCompiler";
-import WebDev from "./pages/WebDev";
-import Hero from "./pages/Hero";
+import OnlineCompilerPage from "./pages/OnlineCompilerPage";
+import WebDevPage from "./pages/WebDevPage";
+import LandingPage from "./pages/LandingPage";
 import { BrowserRouter, Route, Routes } from "react-router";
-import NotFound from "./pages/NotFound";
+import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./utils/ProtectedRoute";
-import Profile from "./pages/Profile";
+import ProfilePage from "./pages/ProfilePage";
 import SideBarWrapper from "./components/SideBarWrapper";
-import Logout from "./pages/Logout";
-import Dashboard from "./pages/Dashboard";
-import Settings from "./pages/Settings";
+import LogoutPage from "./pages/LogoutPage";
+import DashboardPage from "./pages/DashboardPage";
+import SettingsPage from "./pages/SettingsPage";
 
 const App = () => {
   const darkMode = useStore(state => state.darkMode);
@@ -44,17 +44,17 @@ const App = () => {
         />
         
         <Routes>
-          <Route path="/" element={<Hero />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/logout" element={<LogoutPage />} />
+          <Route path="*" element={<NotFoundPage />} />
 
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<SideBarWrapper><Dashboard /></SideBarWrapper>} />
-            <Route path="/online-compiler" element={<SideBarWrapper><OnlineCompiler /></SideBarWrapper>} />
-            <Route path="/webdev-playground" element={<SideBarWrapper><WebDev /></SideBarWrapper>} />
-            <Route path="/profile" element={<SideBarWrapper><Profile /></SideBarWrapper>} />
-            <Route path="/settings" element={<SideBarWrapper><Settings /></SideBarWrapper>} />
+            <Route path="/dashboard" element={<SideBarWrapper><DashboardPage /></SideBarWrapper>} />
+            <Route path="/online-compiler" element={<SideBarWrapper><OnlineCompilerPage /></SideBarWrapper>} />
+            <Route path="/webdev-playground" element={<SideBarWrapper><WebDevPage /></SideBarWrapper>} />
+            <Route path="/profile" element={<SideBarWrapper><ProfilePage /></SideBarWrapper>} />
+            <Route path="/settings" element={<SideBarWrapper><SettingsPage /></SideBarWrapper>} />
           </Route>
 
         </Routes>

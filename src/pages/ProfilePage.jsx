@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { IconCamera, IconEdit, IconCheck, IconX, IconCode } from '@tabler/icons-react';
 import api from '../utils/api';
 
-const Profile = () => {
+const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [editMode, setEditMode] = useState({ fullName: false, email: false, bio: false });
@@ -369,4 +369,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfilePage;

@@ -60,7 +60,7 @@ const officialDocsData = [
     { title: "CSS", href: "https://developer.mozilla.org/en-US/docs/Web/CSS" },
 ];
 
-const Dashboard = () => {
+const DashboardPage = () => {
     const darkMode = useStore((state) => state.darkMode);
     const setDarkModeStore = useStore((state) => state.setDarkMode);
     const profile = useStore((state) => state.profileData);
@@ -249,4 +249,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default DashboardPage;

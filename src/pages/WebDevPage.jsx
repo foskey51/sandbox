@@ -4,7 +4,7 @@ import Split from 'react-split';
 import { ArrowsIn, ArrowsOut, DarkModeIcon, DownloadIcon, LightModeIcon } from '../utils/Icons';
 import useStore from "../../store";
 
-const WebDev = () => {
+const WebDevPage = () => {
   const [html, setHtml] = useState(`<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -270,4 +270,4 @@ const WebDev = () => {
   );
 };
 
-export default WebDev;
+export default WebDevPage;

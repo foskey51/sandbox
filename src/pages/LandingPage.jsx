@@ -1,9 +1,9 @@
 import useStore from "../../store";
 import { ArrowRight, DarkModeIcon, GitHubIcon, LightModeIcon, MouseScroll } from "../utils/Icons";
 import { useState } from "react";
-import LoginSignupModal from "./LoginSignupModal";
+import LoginSignupModal from "../components/LoginSignupModal";
 
-const Hero = () => {
+const LandingPage = () => {
     const store = useStore();
     const darkMode = useStore(state => state.darkMode);
     const isAuthenticated = useStore(state => state.isAuthenticated);
@@ -79,4 +79,4 @@ const Hero = () => {
     );
 };
 
-export default Hero;
+export default LandingPage;
