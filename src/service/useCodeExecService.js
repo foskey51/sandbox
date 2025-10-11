@@ -10,12 +10,13 @@ const useCodeExecService = () => {
   let dataListener = null;
 
   const connect = useCallback(() => {
+    setLoading(true);
     if (socketRef.current?.readyState === WebSocket.OPEN) {
       socketRef.current.close();
     }
     term?.reset();
 
-    const socket = new WebSocket(import.meta.env.VITE_WSS_ENDPOINT);
+    const socket = new WebSocket(`${import.meta.env.VITE_WSS_ENDPOINT}/code/exec`);
     socket.binaryType = 'arraybuffer';
     socketRef.current = socket;
 
@@ -49,10 +50,6 @@ const useCodeExecService = () => {
     socket.onclose = (event) => {
       setLoading(false);
       console.warn('WebSocket closed:', event);
-
-      if (event.code != 1000) {
-        term?.writeln('\r\nServer error. Please try again later.');
-      }
     };
 
     if (dataListener) {

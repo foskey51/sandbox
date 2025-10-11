@@ -14,6 +14,7 @@ import SideBarWrapper from "./components/SideBarWrapper";
 import LogoutPage from "./pages/LogoutPage";
 import DashboardPage from "./pages/DashboardPage";
 import SettingsPage from "./pages/SettingsPage";
+import VmPage from "./pages/VmPage";
 
 const App = () => {
   const darkMode = useStore(state => state.darkMode);
@@ -42,7 +43,7 @@ const App = () => {
           pauseOnHover
           theme={darkMode ? "dark" : "light"}
         />
-        
+
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/logout" element={<LogoutPage />} />
@@ -53,6 +54,7 @@ const App = () => {
             <Route path="/dashboard" element={<SideBarWrapper><DashboardPage /></SideBarWrapper>} />
             <Route path="/online-compiler" element={<SideBarWrapper><OnlineCompilerPage /></SideBarWrapper>} />
             <Route path="/webdev-playground" element={<SideBarWrapper><WebDevPage /></SideBarWrapper>} />
+            <Route path="/vm" element={<SideBarWrapper><VmPage /></SideBarWrapper>} />
             <Route path="/profile" element={<SideBarWrapper><ProfilePage /></SideBarWrapper>} />
             <Route path="/settings" element={<SideBarWrapper><SettingsPage /></SideBarWrapper>} />
           </Route>

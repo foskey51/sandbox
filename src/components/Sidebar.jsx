@@ -9,6 +9,7 @@ import {
   IconUser,
   IconCode,
   IconFileTypeHtml,
+  IconBox,
 } from "@tabler/icons-react";
 import useStore from '../../store';
 import api from "../utils/api";
@@ -17,6 +18,7 @@ const sidebarMenuItems = [
   { icon: <IconHome size={20} />, label: "Dashboard", href: "/dashboard" },
   { icon: <IconCode size={20} />, label: "Online Compiler", href: "/online-compiler" },
   { icon: <IconFileTypeHtml size={20} />, label: "WebDev Playground", href: "/webdev-playground" },
+  { icon: <IconBox size={20} />, label: "Virtual Machine", href: "/vm" },
   { icon: <IconUser size={20} />, label: "Profile", href: "/profile" },
   { icon: <IconSettings size={20} />, label: "Settings", href: "/settings" },
 ];
@@ -82,7 +84,7 @@ const SidebarContent = ({ isOpen, profile }) => (
         />
         {isOpen && (
           <span className="text-lg leading-20 font-mono font-semibold text-neutral-700 dark:text-neutral-200 truncate">
-            {profile?.fullName.toUpperCase() || "----"}
+            {(profile?.fullName || '').toUpperCase()}
           </span>
         )}
       </div>

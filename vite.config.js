@@ -5,7 +5,7 @@ import mkcert from 'vite-plugin-mkcert'
 
 export default defineConfig({
   plugins: [
-    mkcert(),
+  // mkcert(),
     react({
       babel: {
         plugins: ['babel-plugin-react-compiler'],

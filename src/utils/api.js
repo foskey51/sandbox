@@ -1,80 +1,73 @@
 import axios from 'axios';
+import useStore from '../../store';
+
+const { getState } = useStore;
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
   withCredentials: true
 });
 
-let refreshTries = 0;
 let isRefreshing = false;
-let failedQueue = [];
+let failedRequestsQueue = [];
 
-// Helper to process queued requests once refresh is done
-const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-  failedQueue = [];
-};
-
-// Response interceptor
 api.interceptors.response.use(
-  response => response,
-  async error => {
+  (response) => {
+    return response;
+  },
+  async (error) => {
     const originalRequest = error.config;
 
-    // Skip login and signup endpoints
     if (
-      originalRequest?.url?.includes('/auth/v1/login') ||
-      originalRequest?.url?.includes('/auth/v1/signup')
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url?.includes('/auth/refresh') &&
+      !originalRequest.url?.includes('/auth/login')
     ) {
-      return Promise.reject(error);
-    }
-
-    // If unauthorized and not already retrying
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      if (refreshTries >= 3) {
-        // Too many failures -> logout
-        await api.post('/auth/v1/logout');
-        window.location.href = '/logout';
-        return Promise.reject(error);
-      }
-
       if (isRefreshing) {
-        // Queue requests while refresh is happening
-        return new Promise(function (resolve, reject) {
-          failedQueue.push({ resolve, reject });
-        })
-          .then(() => api(originalRequest))
-          .catch(err => Promise.reject(err));
+        return new Promise((resolve, reject) => {
+          failedRequestsQueue.push({ resolve, reject, config: originalRequest });
+        });
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
-      refreshTries++;
 
       try {
-        await api.post('/auth/v1/refreshToken'); // refresh access token (cookie updated by server)
-        processQueue(null);
-        return api(originalRequest); // retry the original request
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        if (refreshTries >= 3) {
-          await api.post('/auth/v1/logout');
-          window.location.href = '/logout';
-        }
-        return Promise.reject(refreshError);
-      } finally {
+        const refreshResponse = await api.post('/api/v1/auth/refresh', {});
+
+        failedRequestsQueue.forEach(({ resolve, config }) => {
+          config._retry = false;
+          resolve(api(config));
+        });
+        failedRequestsQueue = [];
         isRefreshing = false;
+
+        return api(originalRequest);
+      } catch (refreshError) {
+        failedRequestsQueue.forEach(({ reject }) => reject(refreshError));
+        failedRequestsQueue = [];
+        isRefreshing = false;
+
+        if (originalRequest) originalRequest._retry = false;
+
+        getState().setIsAuthenticated(false);
+
+        if (window.location.pathname !== '/') {
+          window.location.href = '/';
+        }
+
+        return Promise.reject(refreshError);
       }
     }
 
     return Promise.reject(error);
   }
+);
+
+api.interceptors.request.use(
+  (config) => config,
+  (error) => Promise.reject(error)
 );
 
 export default api;

@@ -1,97 +1,66 @@
-import { DarkModeIcon, LightModeIcon, PlayIcon, StopIcon, ResetIcon, Loading } from "../utils/Icons"
-import useStore from "../../store";
-import { useState } from "react";
-import useCodeExecService from "../service/useCodeExecService";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from 'react'
+import useStore from '../../store';
+import { MoonIcon, SunIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
 const NavBar = () => {
-    const store = useStore();
-    const darkMode = useStore(state => state.darkMode);
-    const loading = useStore(state => state.loading);
-    const [isDropdownVisible, setDropdownVisible] = useState(false);
-    const { setLanguageName, setDarkMode, setLoading } = store;
-    const languageName = useStore(state => state.languageName);
-    const languageList = useStore(state => state.languageList);
-    const { connect, close } = useCodeExecService();
-
+    const darkMode = useStore((state) => state.darkMode);
+    const setDarkModeStore = useStore((state) => state.setDarkMode);
+    const profile = useStore((state) => state.profileData);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
+    const toggleDarkMode = () => {
+        setDarkModeStore(!darkMode);
+    };
+
+    // Close dropdown
     useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setDropdownVisible(false);
-            }
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setDropdownOpen(false);
         };
         document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const toggleDarkMode = () => {
-        setDarkMode(!darkMode);
-    };
-
-    const renderList = (words) => {
-        return (
-            <div
-                ref={dropdownRef}
-                className="fixed top-12 right-14 z-10 dark:bg-gray-800 dark:text-white bg-white text-black border border-gray-400 rounded-md shadow-md overflow-y-auto max-h-[15rem]"
-            >
-                <ul>
-                    {words.map((word, index) => (
-                        <li
-                            key={index}
-                            onClick={() => {
-                                setLanguageName(word);
-                                setDropdownVisible(false);
-                            }}
-                            className="p-1 cursor-pointer text-balance font-mono truncate ease-in-out border-b-2 border-2 dark:text-white dark:hover:bg-gray-700 text-black hover:bg-gray-100"
-                        >
-                            {word}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        );
-    };
-
     return (
-        <>
-            <div className="flex flex-col">
-                <div className="flex p-4 dark:bg-black dark:text-white bg-white text-black">
-                    <span className="text-xl font-mono font-semibold">Sandbox</span>
-                    <div className="flex ml-auto left-1/2 transform translate-x-1/2 mt-1 space-x-4">
-                        {loading ? (<Loading />) : (
-                            <button onClick={() => { connect(); setLoading(true); }} >
-                                <PlayIcon />
-                            </button>
-                        )}
-                        <button onClick={close}>
-                            <StopIcon />
-                        </button>
-                        <button onClick={() => console.log("clicked reset")}>
-                            <ResetIcon />
-                        </button>
+        <div className='flex bg-gray-200 dark:bg-black text-gray-900 dark:text-gray-100 border-b-2 border-gray-400 dark:border-gray-600 mt-1'>
+            <nav className="w-full flex-shrink-0 h-16">
+                <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <img src="/logo.jpg" className="h-6 w-6 rounded-md"></img>
+                        <span className="font-bold text-xl tracking-tight">Sandbox</span>
                     </div>
-                    {isDropdownVisible && renderList(languageList)}
-                    <div className="ml-auto w-[28%] flex space-x-3 items-center justify-end relative">
-                        <span className="font-mono relative z-10">Language</span>
-                        <div
-                            className="border-gray-400 border-[1px] w-full leading-relaxed rounded-md text-center text-sm truncate dark:bg-gray-800 dark:text-white bg-white text-black cursor-pointer"
-                            onClick={() => setDropdownVisible(true)}
+                    <div className="flex items-center gap-4" ref={dropdownRef}>
+                        <button
+                            onClick={toggleDarkMode}
+                            aria-label="Toggle dark mode"
+                            className="p-2 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
                         >
-                            {languageName || "Select Language"}
-                        </div>
-                        <button onClick={toggleDarkMode}>
-                            {darkMode ? <DarkModeIcon /> : <LightModeIcon />}
+                            {darkMode ? <SunIcon className="h-5 w-5 text-yellow-500" /> : <MoonIcon className="h-5 w-5 text-gray-600" />}
                         </button>
+                        <button onClick={() => setDropdownOpen(!dropdownOpen)}>
+                            {profile?.profileImage ? (
+                                <img
+                                    src={profile.profileImage}
+                                    alt="User"
+                                    className="h-10 w-10 rounded-full object-cover"
+                                />
+                            ) : (
+                                <UserCircleIcon className="h-10 w-10 text-gray-400" />
+                            )}
+                        </button>
+                        {dropdownOpen && (
+                            <div className="absolute right-0 top-14 w-48 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg border border-gray-300 dark:border-gray-700 py-2">
+                                <button onClick={() => (window.location.href = "/profile")} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Profile</button>
+                                <button onClick={() => (window.location.href = "/settings")} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Settings</button>
+                                <button onClick={() => (window.location.href = "/logout")} className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Logout</button>
+                            </div>
+                        )}
                     </div>
                 </div>
-                <span className="p-[0.5px] bg-gray-300"></span>
-            </div>
-        </>
-    );
-};
+            </nav>
+        </div>
+    )
+}
 
-export default NavBar;
+export default NavBar

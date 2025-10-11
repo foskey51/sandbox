@@ -7,7 +7,7 @@ const LoginSignupModal = ({ onClose }) => {
   const isAuthenticated = useStore(state => state.isAuthenticated);
   const { setIsAuthenticated } = store;
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ username: '', password: '', confirmPassword: '' });
+  const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState({ username: '', password: '', confirmPassword: '', general: '' });
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -32,13 +32,13 @@ const LoginSignupModal = ({ onClose }) => {
     if (error.username || error.password || (!isLogin && error.confirmPassword)) return;
 
     try {
-      const endpoint = isLogin ? '/auth/v1/login' : '/auth/v1/signup';
-      const body = { username: formData.username, password: formData.password };
+      const endpoint = isLogin ? '/api/v1/auth/login' : '/api/v1/auth/signup';
+      const body = { email: formData.email, password: formData.password };
       const res = await api.post(endpoint, body);
 
       if (!isLogin) {
         setSuccessMessage('Signup successful! Please login.');
-        setFormData({ username: '', password: '', confirmPassword: '' });
+        setFormData({ email: '', password: '', confirmPassword: '' });
         setError({ username: '', password: '', confirmPassword: '', general: '' });
         setIsLogin(true);
       } else {
@@ -80,15 +80,16 @@ const LoginSignupModal = ({ onClose }) => {
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="flex flex-col text-start">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Username
+              Email
             </label>
             <input
-              name="username"
-              value={formData.username}
+              name="email"
+              type='email'
+              value={formData.email}
               onChange={handleChange}
               required
               className="bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-              placeholder="Enter username"
+              placeholder="Enter email"
             />
             {error.username && <p className="text-red-500 text-xs mt-1">{error.username}</p>}
           </div>
