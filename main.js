@@ -1,22 +1,34 @@
-import { app, BrowserWindow } from "electron"
+import { app, BrowserWindow } from "electron";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const isDev = !app.isPackaged;
 
 function createWindow() {
-    const win = new BrowserWindow({
-        autoHideMenuBar: true,
-        width: 800,
-        height: 600,
-        webPreferences: {
-            nodeIntegration: false,  // Keep secure
-            contextIsolation: true,  // Keep secure
-            webSecurity: false,  // Disable: Allows HTTP iframes, CORS bypass, no same-origin blocks
-            allowRunningInsecureContent: true,
-            webviewTag: true,  // Enable <webview> tag
-            webSecurity: false,  
-        }
-    })
+  const win = new BrowserWindow({
+    autoHideMenuBar: true,
+    width: 1000,
+    height: 700,
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      webSecurity: true,
+      partition: 'persist:default',
+    },
+  });
 
-win.loadURL('http://localhost:5173')
-//win.webContents.openDevTools();  // For debugging
+  if (isDev) {
+    win.loadURL("http://localhost:5173");
+    win.webContents.openDevTools();
+  } else {
+    const indexPath = path.join(__dirname, "dist", "index.html");
+    win.loadFile(indexPath);
+  }
+
+  win.on("ready-to-show", () => {
+    win.show();
+  });
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(createWindow);

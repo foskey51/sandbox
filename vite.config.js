@@ -1,11 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import viteCompression from "vite-plugin-compression"
-import mkcert from 'vite-plugin-mkcert'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import viteCompression from 'vite-plugin-compression';
+import mkcert from 'vite-plugin-mkcert';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
-  // mkcert(),
     react({
       babel: {
         plugins: ['babel-plugin-react-compiler'],
@@ -17,7 +16,11 @@ export default defineConfig({
       verbose: true,
     }),
   ],
+
+  base: mode === 'development' ? '/' : './',
+
   build: {
     target: 'esnext',
+    outDir: 'dist', 
   },
-})
+}));
