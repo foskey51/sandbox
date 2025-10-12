@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { IconCamera, IconEdit, IconCheck, IconX, IconCode } from '@tabler/icons-react';
 import api from '../utils/api';
+import NavBar from '../components/NavBar';
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState({ fullName: '', email: '', bio: '', username: '', profileImage: '' });
@@ -135,6 +136,7 @@ const ProfilePage = () => {
 
   return (
     <div className="w-full h-full bg-white dark:bg-black text-black dark:text-white transition-colors duration-200 overflow-auto">
+      <NavBar />
       <div className="max-w-4xl mx-auto p-4 sm:px-6 lg:px-8 py-8 space-y-6">
         {successMessage && <div className="p-4 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-lg">{successMessage}</div>}
 

@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react'
 import useStore from '../../store';
 import { MoonIcon, SunIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router';
 
 const NavBar = () => {
+    const navigate = useNavigate();
     const darkMode = useStore((state) => state.darkMode);
     const setDarkModeStore = useStore((state) => state.setDarkMode);
     const profile = useStore((state) => state.profileData);
@@ -51,9 +53,9 @@ const NavBar = () => {
                         </button>
                         {dropdownOpen && (
                             <div className="absolute right-0 top-14 w-48 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg border border-gray-300 dark:border-gray-700 py-2">
-                                <button onClick={() => (window.location.href = "/profile")} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Profile</button>
-                                <button onClick={() => (window.location.href = "/settings")} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Settings</button>
-                                <button onClick={() => (window.location.href = "/logout")} className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Logout</button>
+                                <button onClick={() => (navigate("/profile"))} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Profile</button>
+                                <button onClick={() => (navigate("/settings"))} className="w-full text-left px-4 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Settings</button>
+                                <button onClick={() => (navigate("/logout"))} className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">Logout</button>
                             </div>
                         )}
                     </div>

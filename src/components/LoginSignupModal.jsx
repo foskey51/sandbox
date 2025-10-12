@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import useStore from '../../store';
 import api from '../utils/api';
+import { useNavigate } from 'react-router';
 
-const LoginSignupModal = ({ onClose }) => {
+const LoginSignupModal = () => {
   const store = useStore();
-  const isAuthenticated = useStore(state => state.isAuthenticated);
   const { setIsAuthenticated } = store;
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState({ username: '', password: '', confirmPassword: '', general: '' });
@@ -45,7 +46,7 @@ const LoginSignupModal = ({ onClose }) => {
         setSuccessMessage('Login successful!');
         setError({ username: '', password: '', confirmPassword: '', general: '' });
         setIsAuthenticated(true);
-        window.location.href = '/dashboard';
+        navigate("/dashboard");
       }
     } catch (err) {
       setIsAuthenticated(false);
@@ -57,101 +58,92 @@ const LoginSignupModal = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md px-4">
-      <div className="relative w-full max-w-md p-8 rounded-xl border border-black bg-white dark:border-gray-300 dark:bg-black">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 dark:text-gray-500"
-        >
-          ✕
-        </button>
+    <div className="w-full max-w-md p-8 rounded-xl border border-black bg-white dark:border-gray-300 dark:bg-black shadow-lg">
+      <h2 className="text-3xl font-bold text-center mb-6 text-black dark:text-white">
+        {isLogin ? 'Login' : 'Sign Up'}
+      </h2>
 
-        <h2 className="text-3xl font-bold text-center mb-6 text-black dark:text-white">
-          {isLogin ? 'Login' : 'Sign Up'}
-        </h2>
+      {error.general && (
+        <p className="text-red-500 text-sm text-center mb-4">{error.general}</p>
+      )}
+      {successMessage && (
+        <p className="text-green-500 text-sm text-center mb-4">{successMessage}</p>
+      )}
 
-        {error.general && (
-          <p className="text-red-500 text-sm text-center mb-4">{error.general}</p>
-        )}
-        {successMessage && (
-          <p className="text-green-500 text-sm text-center mb-4">{successMessage}</p>
-        )}
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="flex flex-col text-start">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Email
+          </label>
+          <input
+            name="email"
+            type='email'
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+            placeholder="Enter email"
+          />
+          {error.username && <p className="text-red-500 text-xs mt-1">{error.username}</p>}
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="flex flex-col text-start">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+            placeholder="Enter password"
+          />
+          {error.password && <p className="text-red-500 text-xs mt-1">{error.password}</p>}
+        </div>
+
+        {!isLogin && (
           <div className="flex flex-col text-start">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Email
-            </label>
-            <input
-              name="email"
-              type='email'
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-              placeholder="Enter email"
-            />
-            {error.username && <p className="text-red-500 text-xs mt-1">{error.username}</p>}
-          </div>
-
-          <div className="flex flex-col text-start">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Password
+              Confirm Password
             </label>
             <input
               type="password"
-              name="password"
-              value={formData.password}
+              name="confirmPassword"
+              value={formData.confirmPassword}
               onChange={handleChange}
               required
               className="bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-              placeholder="Enter password"
+              placeholder="Re-enter password"
             />
-            {error.password && <p className="text-red-500 text-xs mt-1">{error.password}</p>}
+            {error.confirmPassword && (
+              <p className="text-red-500 text-xs mt-1">{error.confirmPassword}</p>
+            )}
           </div>
+        )}
 
-          {!isLogin && (
-            <div className="flex flex-col text-start">
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-                placeholder="Re-enter password"
-              />
-              {error.confirmPassword && (
-                <p className="text-red-500 text-xs mt-1">{error.confirmPassword}</p>
-              )}
-            </div>
-          )}
+        <button
+          type="submit"
+          className="w-full bg-black dark:bg-white text-white dark:text-black py-2 rounded-md text-sm font-semibold hover:opacity-90 transition-opacity"
+        >
+          {isLogin ? 'Login' : 'Sign Up'}
+        </button>
+      </form>
 
-          <button
-            type="submit"
-            className="w-full bg-black dark:bg-white text-white dark:text-black py-2 rounded-md text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
-            {isLogin ? 'Login' : 'Sign Up'}
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          {isLogin ? "Don't have an account?" : 'Already have one?'}{' '}
-          <button
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setError({ username: '', password: '', confirmPassword: '', general: '' });
-              setSuccessMessage('');
-            }}
-            className="underline hover:text-black dark:hover:text-white transition-colors"
-          >
-            {isLogin ? 'Sign Up' : 'Login'}
-          </button>
-        </p>
-      </div>
+      <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+        {isLogin ? "Don't have an account?" : 'Already have one?'}{' '}
+        <button
+          onClick={() => {
+            setIsLogin(!isLogin);
+            setError({ username: '', password: '', confirmPassword: '', general: '' });
+            setSuccessMessage('');
+          }}
+          className="underline hover:text-black dark:hover:text-white transition-colors"
+        >
+          {isLogin ? 'Sign Up' : 'Login'}
+        </button>
+      </p>
     </div>
   );
 };

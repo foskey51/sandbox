@@ -13,6 +13,7 @@ import {
 } from "@tabler/icons-react";
 import useStore from '../../store';
 import api from "../utils/api";
+import { useNavigate } from "react-router";
 
 const sidebarMenuItems = [
   { icon: <IconHome size={20} />, label: "Dashboard", href: "/dashboard" },
@@ -23,18 +24,22 @@ const sidebarMenuItems = [
   { icon: <IconSettings size={20} />, label: "Settings", href: "/settings" },
 ];
 
-const SidebarLink = ({ link, isOpen }) => (
-  <a
-    href={link.href}
-    className={cn(
-      "flex items-center gap-2 py-2 text-neutral-700 dark:text-neutral-200 text-sm transition-[padding] duration-150 ease-in-out pr-0 hover:pl-3",
-      isOpen ? "justify-start pl-2" : "justify-center"
-    )}
-  >
-    {link.icon}
-    {isOpen && <span className="whitespace-pre">{link.label}</span>}
-  </a>
-);
+const SidebarLink = ({ link, isOpen }) => {
+  const navigate = useNavigate();
+
+  return (
+    <button
+      onClick={() => navigate(link.href)}
+      className={cn(
+        "flex items-center gap-2 py-2 text-neutral-700 dark:text-neutral-200 text-sm transition-[padding] duration-150 ease-in-out pr-0 hover:pl-3",
+        isOpen ? "justify-start pl-2" : "justify-center"
+      )}
+    >
+      {link.icon}
+      {isOpen && <span className="whitespace-pre">{link.label}</span>}
+    </button>
+  )
+};
 
 const SidebarContent = ({ isOpen, profile }) => (
   <div className="flex flex-col h-full overflow-auto">

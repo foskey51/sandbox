@@ -5,36 +5,48 @@ const { getState } = useStore;
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_SERVER_URL,
-  withCredentials: true
+  withCredentials: true,
 });
 
 let isRefreshing = false;
 let failedRequestsQueue = [];
+let skipNextRequests = false;
+
+const isAuthRequest = (url) =>
+  url?.includes('/api/v1/auth/login') ||
+  url?.includes('/api/v1/auth/signup') ||
+  url?.includes('/api/v1/auth/refresh');
 
 api.interceptors.response.use(
   (response) => {
+    if (isAuthRequest(response.config.url)) {
+      skipNextRequests = true;
+      setTimeout(() => {
+        skipNextRequests = false;
+      }, 1000);
+    }
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
 
-    if (
-      error.response?.status === 401 &&
-      !originalRequest._retry &&
-      !originalRequest.url?.includes('/auth/refresh') &&
-      !originalRequest.url?.includes('/auth/login')
-    ) {
+    if (isAuthRequest(originalRequest.url) || skipNextRequests) {
+      return Promise.reject(error);
+    }
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedRequestsQueue.push({ resolve, reject, config: originalRequest });
         });
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
-        const refreshResponse = await api.post('/api/v1/auth/refresh', {});
+        await api.post('/api/v1/auth/refresh');
 
         failedRequestsQueue.forEach(({ resolve, config }) => {
           config._retry = false;
@@ -49,13 +61,7 @@ api.interceptors.response.use(
         failedRequestsQueue = [];
         isRefreshing = false;
 
-        if (originalRequest) originalRequest._retry = false;
-
         getState().setIsAuthenticated(false);
-
-        if (window.location.pathname !== '/') {
-          window.location.href = '/';
-        }
 
         return Promise.reject(refreshError);
       }
