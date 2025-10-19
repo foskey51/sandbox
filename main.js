@@ -11,10 +11,13 @@ function createWindow() {
     width: 1000,
     height: 700,
     webPreferences: {
-      contextIsolation: true,
+      webviewTag: true,
+      contextIsolation: false,
       nodeIntegration: false,
-      webSecurity: true,
+      webSecurity: false,
+      allowRunningInsecureContent: true,
       partition: 'persist:default',
+      sandbox: false
     },
   });
 

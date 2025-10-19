@@ -7,29 +7,22 @@ const VmPage = () => {
   const [running, setRunning] = useState(false);
   const [novncUrl, setNovncUrl] = useState("");
   const [webviewRef, setWebviewRef] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(()=>{
-    api.get
-  },[])
-
-  const toggleVm = () => {
-    if (!running) {
-      startVm();
-    } else {
-      stopVm();
-    }
-  };
+  useEffect(() => {
+    // automatically start the VM on mount
+    startVm();
+  }, []);
 
   const startVm = async () => {
     try {
       setLoading(true);
       setRunning(true);
-      await fetchVnc(); // try to get the VNC URL
+      await fetchVnc(); 
     } catch (err) {
       console.error("Failed to start VM:", err);
       toast.error("Failed to start VM. Please try again.");
-      setRunning(false); // revert UI to initial state
+      setRunning(false);
     } finally {
       setLoading(false);
     }
@@ -49,7 +42,7 @@ const VmPage = () => {
     } catch (error) {
       console.error("API error:", error);
       toast.error("Could not connect to VM. Please check your connection.");
-      throw error; // rethrow to be handled by startVm()
+      throw error;
     }
   }
 
@@ -59,17 +52,9 @@ const VmPage = () => {
 
       <main className="flex flex-1 h-full w-full relative">
         <div className="w-full relative flex items-center justify-center">
-          {!running && (
-            <div className="w-full h-full relative">
-              <button
-                onClick={toggleVm}
-                disabled={loading}
-                className={`absolute border-white border-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-12 py-3 rounded font-semibold ${
-                  loading ? "bg-gray-500 cursor-not-allowed" : "bg-black hover:bg-green-800"
-                } text-white shadow-lg transition-colors`}
-              >
-                {loading ? "Starting..." : "Start VM"}
-              </button>
+          {loading && (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white font-semibold">
+              Starting VM...
             </div>
           )}
 
@@ -81,7 +66,6 @@ const VmPage = () => {
               style={{ width: "100%", height: "100%" }}
               disablewebsecurity="true"
               allowpopups="true"
-              webpreferences="contextIsolation=0, nodeIntegration=0"
             />
           )}
         </div>
