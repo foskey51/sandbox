@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "react-scripts start",
-    "electron": "ELECTRON_DISABLE_SECURITY_WARNINGS=true electron .",
+    "electron": "ELECTRON_DISABLE_SECURITY_WARNINGS=true electron . --trace-warnings",
     "electron:build": "npm run build && electron-builder",
     "dev": "vite",
     "build": "vite build",
@@ -49,6 +49,7 @@
     "motion": "^12.23.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-loading-indicators": "^1.0.1",
     "react-markdown": "^10.1.0",
     "react-router": "^7.6.2",
     "react-split": "^2.0.14",
