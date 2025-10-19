@@ -10,60 +10,69 @@ const api = axios.create({
 
 let isRefreshing = false;
 let failedRequestsQueue = [];
-let skipNextRequests = false;
 
 const isAuthRequest = (url) =>
   url?.includes('/api/v1/auth/login') ||
   url?.includes('/api/v1/auth/signup') ||
   url?.includes('/api/v1/auth/refresh');
 
+// Response interceptor
 api.interceptors.response.use(
-  (response) => {
-    if (isAuthRequest(response.config.url)) {
-      skipNextRequests = true;
-      setTimeout(() => {
-        skipNextRequests = false;
-      }, 1000);
-    }
-    return response;
-  },
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    if (isAuthRequest(originalRequest.url) || skipNextRequests) {
+    // Don't retry auth requests
+    if (isAuthRequest(originalRequest?.url)) {
       return Promise.reject(error);
     }
 
+    // Handle 401 errors
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       if (isRefreshing) {
+        // Queue this request while refresh is happening
         return new Promise((resolve, reject) => {
-          failedRequestsQueue.push({ resolve, reject, config: originalRequest });
+          failedRequestsQueue.push({
+            resolve: (token) => {
+              resolve(api(originalRequest));
+            },
+            reject: (err) => {
+              reject(err);
+            },
+          });
         });
       }
 
       isRefreshing = true;
 
       try {
+        // Refresh the token
         await api.post('/api/v1/auth/refresh');
-
-        failedRequestsQueue.forEach(({ resolve, config }) => {
-          config._retry = false;
-          resolve(api(config));
+        
+        // Token refreshed successfully - process queue
+        failedRequestsQueue.forEach((promise) => {
+          promise.resolve();
         });
         failedRequestsQueue = [];
-        isRefreshing = false;
 
+        // Retry the original request
         return api(originalRequest);
       } catch (refreshError) {
-        failedRequestsQueue.forEach(({ reject }) => reject(refreshError));
+        // Refresh failed - reject all queued requests
+        failedRequestsQueue.forEach((promise) => {
+          promise.reject(refreshError);
+        });
         failedRequestsQueue = [];
-        isRefreshing = false;
-
+        
+        // Clear auth state and redirect
         getState().setIsAuthenticated(false);
-
+        window.location.href = '/logout';
+        
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 

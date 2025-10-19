@@ -6,7 +6,7 @@ import "./App.css"
 import OnlineCompilerPage from "./pages/OnlineCompilerPage";
 import WebDevPage from "./pages/WebDevPage";
 import LandingPage from "./pages/LandingPage";
-import { HashRouter, Navigate, Route, Routes } from "react-router";
+import { HashRouter, Route, Routes } from "react-router";
 import NotFoundPage from "./pages/NotFoundPage";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ProfilePage from "./pages/ProfilePage";
@@ -18,7 +18,6 @@ import VmPage from "./pages/VmPage";
 
 const App = () => {
   const darkMode = useStore(state => state.darkMode);
-  const isAuthenticated = useStore((state) => state.isAuthenticated);
 
   useEffect(() => {
     if (darkMode) {
@@ -46,12 +45,7 @@ const App = () => {
         />
 
         <Routes>
-          <Route
-            path="/"
-            element={
-              isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />
-            }
-          />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/logout" element={<LogoutPage />} />
           <Route path="*" element={<NotFoundPage />} />
 
@@ -67,7 +61,6 @@ const App = () => {
 
         </Routes>
       </HashRouter>
-
     </>
   )
 };

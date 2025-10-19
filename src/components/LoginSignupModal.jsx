@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import useStore from '../../store';
 import api from '../utils/api';
 import { useNavigate } from 'react-router';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 const LoginSignupModal = () => {
   const store = useStore();
@@ -11,6 +12,8 @@ const LoginSignupModal = () => {
   const [formData, setFormData] = useState({ email: '', password: '', confirmPassword: '' });
   const [error, setError] = useState({ username: '', password: '', confirmPassword: '', general: '' });
   const [successMessage, setSuccessMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validateUsername = (u) => /^[\w.@+-]{5,}$/.test(u);
   const validatePassword = (p) => /^(?=.*[a-zA-Z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{6,20}$/.test(p);
@@ -63,18 +66,12 @@ const LoginSignupModal = () => {
         {isLogin ? 'Login' : 'Sign Up'}
       </h2>
 
-      {error.general && (
-        <p className="text-red-500 text-sm text-center mb-4">{error.general}</p>
-      )}
-      {successMessage && (
-        <p className="text-green-500 text-sm text-center mb-4">{successMessage}</p>
-      )}
+      {error.general && <p className="text-red-500 text-sm text-center mb-4">{error.general}</p>}
+      {successMessage && <p className="text-green-500 text-sm text-center mb-4">{successMessage}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="flex flex-col text-start">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Email
-          </label>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
           <input
             name="email"
             type='email'
@@ -88,38 +85,48 @@ const LoginSignupModal = () => {
         </div>
 
         <div className="flex flex-col text-start">
-          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Password
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-            placeholder="Enter password"
-          />
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="w-full bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 pr-10 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+              placeholder="Enter password"
+            />
+            <div
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+            </div>
+          </div>
           {error.password && <p className="text-red-500 text-xs mt-1">{error.password}</p>}
         </div>
 
         {!isLogin && (
           <div className="flex flex-col text-start">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
-              placeholder="Re-enter password"
-            />
-            {error.confirmPassword && (
-              <p className="text-red-500 text-xs mt-1">{error.confirmPassword}</p>
-            )}
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="w-full bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-3 py-2 pr-10 text-sm text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white"
+                placeholder="Re-enter password"
+              />
+              <div
+                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-400"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+              </div>
+            </div>
+            {error.confirmPassword && <p className="text-red-500 text-xs mt-1">{error.confirmPassword}</p>}
           </div>
         )}
 

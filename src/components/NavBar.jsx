@@ -29,7 +29,7 @@ const NavBar = () => {
             <nav className="w-full flex-shrink-0 h-16">
                 <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <img src="/logo.jpg" className="h-6 w-6 rounded-md"></img>
+                        <img src="https://i.ibb.co/QvjNDNjg/logo.jpg" className="h-6 w-6 rounded-md"></img>
                         <span className="font-bold text-xl tracking-tight">Sandbox</span>
                     </div>
                     <div className="flex items-center gap-4" ref={dropdownRef}>
@@ -38,7 +38,7 @@ const NavBar = () => {
                             aria-label="Toggle dark mode"
                             className="p-2 rounded-full bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 transition-colors"
                         >
-                            {darkMode ? <SunIcon className="h-5 w-5 text-yellow-500" /> : <MoonIcon className="h-5 w-5 text-gray-600" />}
+                            {darkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
                         </button>
                         <button onClick={() => setDropdownOpen(!dropdownOpen)}>
                             {profile?.profileImage ? (

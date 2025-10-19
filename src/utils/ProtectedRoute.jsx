@@ -4,14 +4,8 @@ import useStore from "../../store";
 const ProtectedRoute = () => {
 
   const isAuthenticated = useStore(state => state.isAuthenticated);
-
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
-  return (
-    <Outlet />
-  );
+  
+  return isAuthenticated ? <Outlet /> : <Navigate to="/" replace={true} />;
 };
 
 export default ProtectedRoute;

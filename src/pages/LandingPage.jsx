@@ -1,5 +1,5 @@
 import useStore from "../../store";
-import { ArrowRight, DarkModeIcon, GitHubIcon, LightModeIcon } from "../utils/Icons";
+import { DarkModeIcon, GitHubIcon, LightModeIcon } from "../utils/Icons";
 import LoginSignupModal from "../components/LoginSignupModal";
 
 const LandingPage = () => {
@@ -42,15 +42,6 @@ const LandingPage = () => {
                             Learn to code, try web development, and explore Linux — all right in here.
                         </p>
                         <div className="flex space-x-6">
-                            <button
-                                onClick={() =>
-                                    isAuthenticated ? window.open("/dashboard", "_self") : null
-                                }
-                                className="flex items-center justify-center bg-yellow-700 text-white px-8 py-3 rounded-md text-base font-semibold hover:bg-yellow-600 transition"
-                            >
-                                Get Started
-                                <ArrowRight className="w-5 h-5 ml-3" />
-                            </button>
                             <button
                                 onClick={() => window.open("https://github.com/foskey51/sandbox/", "_blank")}
                                 className="flex items-center justify-center bg-gray-800 text-white px-7 py-3 rounded-md text-base font-semibold hover:bg-gray-700 transition"

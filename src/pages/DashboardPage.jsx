@@ -106,7 +106,7 @@ const DashboardPage = () => {
                                     href={doc.href}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="block p-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-black dark:text-white font-medium text-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm"
+                                    className="block p-2 bg-gray-200 dark:bg-gray-700 rounded-lg text-black dark:text-white font-medium text-center hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm truncate"
                                 >
                                     {doc.title}
                                 </a>
