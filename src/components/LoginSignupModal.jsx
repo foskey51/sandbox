@@ -61,7 +61,7 @@ const LoginSignupModal = () => {
   };
 
   return (
-    <div className="w-full max-w-md p-8 rounded-xl border border-black bg-white dark:border-gray-300 dark:bg-black shadow-lg">
+    <div className="w-full max-w-md p-8 rounded-xl border-2 border-black bg-white dark:border-gray-300 dark:bg-black shadow-lg">
       <h2 className="text-3xl font-bold text-center mb-6 text-black dark:text-white">
         {isLogin ? 'Login' : 'Sign Up'}
       </h2>

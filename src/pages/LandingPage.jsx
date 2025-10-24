@@ -8,29 +8,34 @@ const LandingPage = () => {
     const isAuthenticated = useStore((state) => state.isAuthenticated);
     const { setDarkMode } = store;
 
+    const githubUrl = "https://github.com/foskey51/sandbox/";
+
     return (
         <div className="h-screen w-screen text-black dark:text-white transition-colors duration-500 font-sans overflow-hidden relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black">
-            <div className="fixed top-8 left-1/2 transform -translate-x-1/2 w-[70%] max-w-6xl bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 shadow-lg rounded-full px-8 py-3 flex items-center gap-6 z-50">
-                <span className="text-xl font-semibold">Sandbox</span>
-                <div className="flex ml-auto items-center space-x-4">
-                    <button
-                        onClick={() => window.open("https://github.com/foskey51/sandbox/", "_blank")}
-                        className="p-2 hover:scale-110 transition-transform"
-                    >
-                        <GitHubIcon className="h-6 w-6" />
-                    </button>
+
+            <header className="absolute top-4 w-full flex justify-between items-center px-20 py-5">
+                <h1 className="text-4xl font-bold font-mono">Sandbox</h1>
+                <div className="flex items-center gap-4 bg-gray-100 dark:bg-gray-800 border-[1.5px] border-black dark:border-gray-400 rounded-full px-4 py-2 shadow-sm">
                     <button
                         onClick={() => setDarkMode(!darkMode)}
-                        className="p-2 hover:scale-110 transition-transform"
+                        className="p-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition"
                     >
                         {darkMode ? (
-                            <LightModeIcon className="w-6 h-6 text-white" />
+                            <LightModeIcon className="w-6 h-6" />
                         ) : (
-                            <DarkModeIcon className="w-6 h-6 text-black" />
+                            <DarkModeIcon className="w-6 h-6" />
                         )}
                     </button>
+                    <a
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                    >
+                        <GitHubIcon className="w-6 h-6" />
+                    </a>
                 </div>
-            </div>
+            </header>
 
             <div className="h-full flex items-center justify-center px-24">
                 <div className="grid grid-cols-2 w-full max-w-6xl gap-12">
@@ -43,8 +48,8 @@ const LandingPage = () => {
                         </p>
                         <div className="flex space-x-6">
                             <button
-                                onClick={() => window.open("https://github.com/foskey51/sandbox/", "_blank")}
-                                className="flex items-center justify-center bg-gray-800 text-white px-7 py-3 rounded-md text-base font-semibold hover:bg-gray-700 transition"
+                                onClick={() => window.open(`${githubUrl}`, "_blank")}
+                                className="flex items-center justify-center bg-black text-white px-7 py-3 rounded-md text-base font-semibold hover:bg-gray-700 transition dark:border-white dark:border-[1.5px]"
                             >
                                 <GitHubIcon className="w-5 h-5 mr-2" />
                                 Open Source
@@ -60,7 +65,7 @@ const LandingPage = () => {
                 </div>
             </div>
 
-            <footer className="absolute bottom-0 w-full py-5 text-center bg-neutral-100 dark:bg-neutral-950 text-sm text-neutral-600 dark:text-neutral-400">
+            <footer className="absolute bottom-0 w-full py-5 text-center text-gray-500">
                 © 2025 Sandbox. All rights reserved.
             </footer>
         </div>

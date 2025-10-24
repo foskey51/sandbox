@@ -43,7 +43,7 @@ const Assistant = () => {
     try {
       const systemMessage = {
         role: "system",
-        content: `You are a programming tutor. Teach with short, clear code examples that always include a complete main function (class App in Java). Give a brief explanation and always end with a follow-up question.`
+        content: 'You are a programming tutor. Give short, clear code examples that always include a complete main function (or class App in Java). Keep examples minimal and correct. End each explanation with a follow-up question to engage the user.'
       };
 
       const response = await fetch(`${import.meta.env.VITE_LLM_URL}/api/chat`, {

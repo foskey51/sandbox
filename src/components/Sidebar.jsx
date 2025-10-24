@@ -161,7 +161,7 @@ export const Sidebar = () => {
       <div className="hidden md:flex h-full">
         <div
           className={cn(
-            "px-4 py-3 flex flex-col bg-neutral-100 dark:bg-black transition-all duration-200 ease-in-out"
+            "px-4 py-3 flex flex-col bg-neutral-100 dark:bg-black border-r-2 border-gray-400 dark:border-gray-600 transition-all duration-200 ease-in-out"
           )}
           style={{ width: open ? "250px" : "60px" }}
           onMouseEnter={() => setOpen(true)}

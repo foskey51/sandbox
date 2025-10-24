@@ -25,7 +25,7 @@ const NavBar = () => {
     }, []);
 
     return (
-        <div className='flex bg-gray-200 dark:bg-black text-gray-900 dark:text-gray-100 border-b-2 border-gray-400 dark:border-gray-600 mt-1'>
+        <div className='flex bg-gray-100 dark:bg-black text-gray-900 dark:text-gray-100 border-b-2 border-gray-400 dark:border-gray-600 mt-1'>
             <nav className="w-full flex-shrink-0 h-16">
                 <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
                     <div className="flex items-center gap-3">
