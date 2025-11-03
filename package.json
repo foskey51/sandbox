@@ -5,41 +5,19 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "start": "react-scripts start",
-    "electron": "ELECTRON_DISABLE_SECURITY_WARNINGS=true electron . --trace-warnings",
-    "electron:build": "npm run build && electron-builder",
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "build": {
-    "appId": "com.example.sandbox",
-    "productName": "Sandbox",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "dist/**/*",
-      "main.js",
-      "package.json"
-    ],
-    "mac": {
-      "category": "public.app-category.developer-tools",
-      "target": "dmg"
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "linux": {
-      "target": "AppImage"
-    }
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@monaco-editor/react": "^4.7.0",
     "@tabler/icons-react": "^3.34.0",
     "@tailwindcss/postcss": "^4.1.8",
+    "@tauri-apps/api": "^2.9.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "axios": "^1.10.0",
@@ -60,6 +38,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@tauri-apps/cli": "^2.9.2",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
