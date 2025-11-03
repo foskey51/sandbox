@@ -8,7 +8,7 @@
  It provides users with an intuitive interface to write, compile, and run code in a safe environment.
  The system uses Monaco Editor for editing, Xterm.js for terminal emulation, and WebSocket for real-time communication.
 
- ![Preview](./screenshots/preview.gif)
+ ![Preview](./screenshots/preview1.gif)
 
  ## Features
  - Code Editing: Monaco Editor with syntax highlighting, code suggestions, and inline error detection.
