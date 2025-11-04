@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useLayoutEffect } from "react";
+import { useRef, useEffect, useState, useLayoutEffect, useMemo, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark, oneLight } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -13,22 +13,24 @@ const Assistant = () => {
   const chatContainerRef = useRef(null);
   const controllerRef = useRef(null);
   const shouldStreamRef = useRef(true);
+  const streamBufferRef = useRef(""); // Buffer for streaming content
 
   const chatboxInput = useStore(state => state.chatboxInput);
   const { setChatboxInput, setMessages } = useStore();
   const messages = useStore(state => state.messages);
   const [isLoading, setIsLoading] = useState(false);
   const [hasAssistantStarted, setHasAssistantStarted] = useState(false);
+  const [streamingContent, setStreamingContent] = useState(""); // Local state for streaming
   const darkMode = useStore(state => state.darkMode);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const handleInput = () => {
+  const handleInput = useCallback(() => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = "auto";
       textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
     }
-  };
+  }, []);
 
   const handleSubmit = async () => {
     if (!chatboxInput.trim() || isLoading) return;
@@ -37,13 +39,15 @@ const Assistant = () => {
     setChatboxInput("");
     setIsLoading(true);
     setHasAssistantStarted(false);
+    setStreamingContent("");
+    streamBufferRef.current = "";
     shouldStreamRef.current = true;
     controllerRef.current = new AbortController();
 
     try {
       const systemMessage = {
         role: "system",
-        content: 'You are a programming tutor. Give short, clear code examples that always include a complete main function (or class App in Java). Keep examples minimal and correct. End each explanation with a follow-up question to engage the user.'
+        content: 'You are a programming tutor. Give short, clear code examples that always include a complete main function (use class name as "App" for java). Keep examples short and correct ask follow-up question to engage the user.'
       };
 
       const response = await fetch(`${import.meta.env.VITE_LLM_URL}/api/chat`, {
@@ -52,10 +56,7 @@ const Assistant = () => {
         body: JSON.stringify({
           model: "llama3.2",
           stream: true,
-          messages: [
-            systemMessage,
-            ...newMessages,
-          ],
+          messages: [systemMessage, ...newMessages],
         }),
         signal: controllerRef.current.signal,
       });
@@ -63,26 +64,43 @@ const Assistant = () => {
       const reader = response.body.getReader();
       const decoder = new TextDecoder("utf-8");
       let assistantMessage = "";
+      let buffer = ""; // Buffer for incomplete JSON
 
       while (true) {
         if (!shouldStreamRef.current) break;
         const { value, done } = await reader.read();
         if (done) break;
+        
         const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n").filter(Boolean);
+        buffer += chunk;
+        const lines = buffer.split("\n");
+        
+        // Keep the last incomplete line in buffer
+        buffer = lines.pop() || "";
 
         for (const line of lines) {
+          if (!line.trim()) continue;
+          
           try {
             const parsed = JSON.parse(line);
             if (parsed.message?.content && shouldStreamRef.current) {
               if (!hasAssistantStarted) setHasAssistantStarted(true);
               assistantMessage += parsed.message.content;
-              setMessages([...newMessages, { role: "assistant", content: assistantMessage }]);
+              streamBufferRef.current = assistantMessage;
+              
+              // Update immediately for Tauri - no throttling
+              setStreamingContent(assistantMessage);
             }
-          } catch {
-            console.error("Error parsing Data");
+          } catch (e) {
+            // Skip malformed JSON chunks silently in Tauri
           }
         }
+      }
+
+      // Final update with complete message
+      if (streamBufferRef.current) {
+        setMessages([...newMessages, { role: "assistant", content: streamBufferRef.current }]);
+        setStreamingContent("");
       }
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -90,13 +108,24 @@ const Assistant = () => {
       }
     } finally {
       setIsLoading(false);
+      setHasAssistantStarted(false);
     }
   };
 
   const stopStreaming = () => {
     shouldStreamRef.current = false;
-    controllerRef.current?.abort();
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+    
+    // Save whatever we have so far
+    if (streamBufferRef.current) {
+      setMessages([...messages, { role: "assistant", content: streamBufferRef.current }]);
+    }
+    
     setIsLoading(false);
+    setStreamingContent("");
+    setHasAssistantStarted(false);
   };
 
   const handleKeyDown = (e) => {
@@ -106,37 +135,36 @@ const Assistant = () => {
     }
   };
 
-  const handleClearChat = () => {
+  const handleClearChat = useCallback(() => {
     if (window.confirm("Are you sure you want to clear the chat?")) {
       setMessages([]);
       setChatboxInput("");
       toast.success("Chats cleared");
       shouldStreamRef.current = false;
       controllerRef.current?.abort();
-      setMenuOpen(!menuOpen);
+      setMenuOpen(false);
     }
-  };
+  }, [setMessages, setChatboxInput]);
 
-
-  const copyToClipboard = async (code) => {
+  const copyToClipboard = useCallback(async (code) => {
     try {
       await navigator.clipboard.writeText(code);
       toast.success("Copied to clipboard");
     } catch {
       toast.error("!! Error copying text !!");
     }
-  }
+  }, []);
 
   useEffect(() => {
     handleInput();
-  }, [chatboxInput]);
+  }, [chatboxInput, handleInput]);
 
   useLayoutEffect(() => {
     const el = messagesEndRef.current;
-    if (el && !isLoading) {
+    if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "end" });
     }
-  }, [messages]);
+  }, [messages, streamingContent]);
 
   const SendIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -211,14 +239,20 @@ const Assistant = () => {
     </div>
   );
 
-  const renderers = {
+  const renderers = useMemo(() => ({
     code({ node, inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || "");
       const codeStr = String(children).replace(/\n$/, "");
       return !inline && match ? (
         <div className="relative overflow-auto">
           <CopyButton code={codeStr} />
-          <SyntaxHighlighter className="overflow-auto" style={darkMode ? oneDark : oneLight} language={match[1]} PreTag="div" {...props}>
+          <SyntaxHighlighter 
+            className="overflow-auto" 
+            style={darkMode ? oneDark : oneLight} 
+            language={match[1]} 
+            PreTag="div" 
+            {...props}
+          >
             {codeStr}
           </SyntaxHighlighter>
         </div>
@@ -226,7 +260,15 @@ const Assistant = () => {
         <code className="bg-gray-200 dark:bg-gray-800 p-1 rounded text-sm">{children}</code>
       );
     },
-  };
+  }), [darkMode, copyToClipboard]);
+
+  // Combine messages with streaming content for display
+  const displayMessages = useMemo(() => {
+    if (streamingContent && isLoading) {
+      return [...messages, { role: "assistant", content: streamingContent, isStreaming: true }];
+    }
+    return messages;
+  }, [messages, streamingContent, isLoading]);
 
   return (
     <div className="flex flex-col h-full w-full dark:bg-black dark:text-white bg-white text-black relative">
@@ -235,7 +277,6 @@ const Assistant = () => {
           Sandbox AI
         </h1>
 
-        {/* Dots + Dropdown wrapper */}
         <div className="relative ml-auto">
           <IconDotsVertical
             onClick={() => setMenuOpen(!menuOpen)}
@@ -261,9 +302,9 @@ const Assistant = () => {
         ref={chatContainerRef}
         className="flex-1 min-h-0 overflow-y-auto py-3 space-y-4 relative"
       >
-        {messages.length === 0 && !isLoading && <EmptyChatScreen />}
+        {displayMessages.length === 0 && !isLoading && <EmptyChatScreen />}
 
-        {messages.map((msg, idx) => (
+        {displayMessages.map((msg, idx) => (
           <div key={idx} className="w-full flex flex-col items-center">
             <div
               className={`p-3 rounded-xl max-w-full w-full md:max-w-[97%] whitespace-pre-wrap break-words border overflow-x-auto
@@ -278,7 +319,7 @@ const Assistant = () => {
                 msg.content
               )}
             </div>
-            {isLoading && !hasAssistantStarted && idx === messages.length - 1 && msg.role === "user" && (
+            {isLoading && !hasAssistantStarted && idx === displayMessages.length - 1 && msg.role === "user" && (
               <div className="w-full flex justify-center mt-16 relative">
                 <SkeletonLoader />
               </div>
@@ -288,7 +329,6 @@ const Assistant = () => {
 
         <div ref={messagesEndRef} className="h-4" />
       </div>
-
 
       <div className="border-t border-black dark:border-gray-700 px-4 py-3 flex items-end relative gap-2">
         <div className="flex w-full bg-white dark:bg-black border border-black dark:border-gray-700 rounded-xl px-3">
