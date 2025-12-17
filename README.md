@@ -1,7 +1,7 @@
  # Sandbox - Secure Online Coding Platform
 
  A web-based frontend interface for writing, editing, and securely executing code in a sandboxed environment.
- This interface integrates a real-time terminal, AI-driven programming guidance, and syntax-aware code editing.
+ This interface integrates a real-time terminal, AI-driven programming guidance, and syntax-aware code editing and a VM for fun sandbox experimentation.
 
  ## Overview
  This repository contains the frontend implementation of a secure online code execution system.
@@ -24,21 +24,14 @@
     ```
 
  2. Install Dependencies:
-    Ensure Node.js and npm are installed, then run:
     ```bash
     npm install
     ```
 
  3. Run the Application:
-    Start the development server:
     ```bash
-    npm run dev
+    npm run tauri:dev                                                                 
     ```
-
-    The app will be available at http:localhost:5173 (or your configured port).
-
- ## Online Linux VM (Coming Soon)
- An integrated online Linux VM is planned for future releases to support practical, hands-on learning experiences.
 
  ## Notes
  - This repository only contains the frontend interface.
